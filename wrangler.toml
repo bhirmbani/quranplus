@@ -1,4 +1,4 @@
-name = "blog"
+name = "quranplus"
 
 workers_dev = true
 main = "./build/index.js"
