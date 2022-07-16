@@ -1,6 +1,13 @@
+import { useLocation, useMatches, useNavigate } from "@remix-run/react";
 import { chapters } from "~/repositories/chapters";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleChangeSurah = (index: number) => {
+    navigate(`/?surah=${index}`, { replace: false });
+  };
+
   return (
     <div className="navbar bg-base-300">
       <div className="navbar-start" />
@@ -25,8 +32,8 @@ const Navbar = () => {
             tabIndex={0}
             className="overflow-hidden overflow-y-scroll h-navbar-dropdown menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
-            {chapters["id"].map((each) => (
-              <li key={each.id}>
+            {chapters["id"].map((each, index) => (
+              <li onClick={() => handleChangeSurah(index)} key={each.id}>
                 <a>
                   {each.transliteration} - {each.total_verses}
                 </a>

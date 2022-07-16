@@ -17,3 +17,6 @@ type SurahModel = Omit<ChapterModel, "link"> & {
     translation: string;
   }[];
 };
+
+// generic extension type example
+// type Extension<T> = T & { someExtensionProperty: string }

@@ -1,5 +1,5 @@
-import { useNavigate } from "@remix-run/react";
-import { useState } from "react";
+import { useLocation, useMatches, useNavigate } from "@remix-run/react";
+import { useEffect, useState } from "react";
 
 type StateData = {
   name: string;
@@ -10,9 +10,14 @@ type StateData = {
 
 const NavbarBottom = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [activeIndex, setActiveIndex] = useState(0);
 
+  /**
+   * THIS STATE MUST IN ORDER LEFT TO RIGHT
+   * AND HREF MUST MATCH ROUTE NAME
+   */
   const state: StateData[] = [
     {
       name: "index",
@@ -79,9 +84,14 @@ const NavbarBottom = () => {
     },
   ];
 
+  const bottomNavPosition = state.findIndex((each) => each.href === location.pathname);
+
+  useEffect(() => {
+    setActiveIndex(bottomNavPosition);
+  }, [location, bottomNavPosition]);
+
   const handleOnClick = (item: Pick<StateData, "href">, index: number) => {
-    setActiveIndex(index);
-    navigate(item.href);
+    navigate(`${item.href}${location.search}`);
   };
 
   return (
