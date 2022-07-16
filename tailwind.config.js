@@ -5,7 +5,10 @@ module.exports = {
     extend: {
       minHeight: {
         content: "calc(100vh - 64px)",
-      }
+      },
+      height: {
+        "navbar-dropdown": "300px",
+      },
     },
   },
   plugins: [require("daisyui")],

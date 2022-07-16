@@ -23,17 +23,17 @@ export const meta: MetaFunction = () => ({
 
 export default function App() {
   return (
-    <html lang="en" data-theme="corporate">
+    <html lang="en">
       <head>
         <Meta />
         <Links />
       </head>
       <body className="container sm mx-auto max-w-2xl">
-        <div>
+        <>
           <Navbar />
           <Outlet />
           <NavbarBottom />
-        </div>
+        </>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
