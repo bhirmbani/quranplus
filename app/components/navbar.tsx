@@ -39,7 +39,7 @@ const Navbar = () => {
             {chapters["id"].map((each, index) => (
               <li onClick={() => handleChangeSurah(index)} key={each.id}>
                 <a>
-                  {each.transliteration} - {each.total_verses}
+                  ({each.id}) {each.transliteration} - {each.total_verses}
                 </a>
               </li>
             ))}
