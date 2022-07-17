@@ -1,8 +1,17 @@
 import { useLocation, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import NavbarBottom from "~/components/bottom-nav";
+import { copies, errors } from "~/repositories/messages";
 import { surahs } from "~/repositories/surahs";
 import { turnQueryParamsIntoObject } from "~/utils/string";
+
+// export const loader: LoaderFunction = async (context) => {
+//   const params = new URL(context.request.url).searchParams;
+//   const surahPos = params.get("surah");
+//   if (Number(surahPos) > 114) {
+//     throw new Error(errors["id"]["ayah-not-found"]);
+//   }
+//   return null;
+// };
 
 export default function Index() {
   const location = useLocation();
@@ -105,6 +114,38 @@ export default function Index() {
             <div />
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const position = turnQueryParamsIntoObject(location.search || "?surah=1") as {
+    surah: string;
+  };
+
+  const errorMessage =
+    Number(position.surah) > 114 ||
+    Number(position.surah) < 1 ||
+    typeof position.surah !== "number"
+      ? errors["id"]["ayah-not-found"]
+      : error.message;
+
+  return (
+    <div className="flex max-h-content h-screen">
+      <div
+        id="quran-content"
+        className="mx-auto my-5 prose prose-sm overflow-y-scroll hide-scrollbar scroll-smooth flex flex-col justify-center items-center"
+      >
+        <p className="text-center text-red-800">{errorMessage}</p>
+        <button
+          onClick={() => navigate("/?surah=1", { replace: true })}
+          className="btn btn-success btn-wide btn-sm"
+        >
+          {copies["id"]["go-back-home"]}
+        </button>
       </div>
     </div>
   );
