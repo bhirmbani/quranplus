@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       maxHeight: {
-        content: "85%",
+        content: "82%",
       },
       height: {
         "navbar-dropdown": "300px",
