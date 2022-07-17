@@ -28,7 +28,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="container sm mx-auto max-w-2xl">
+      <body className="container sm mx-auto max-w-2xl h-screen overflow-y-hidden">
         <>
           <Navbar />
           <Outlet />
@@ -36,7 +36,7 @@ export default function App() {
         </>
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
+        <LiveReload port={8002}/>
       </body>
     </html>
   );

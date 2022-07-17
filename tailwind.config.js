@@ -3,13 +3,13 @@ module.exports = {
   content: ["./app/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      minHeight: {
-        content: "calc(100vh - 64px)",
+      maxHeight: {
+        content: "85%",
       },
       height: {
         "navbar-dropdown": "300px",
       },
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
 };

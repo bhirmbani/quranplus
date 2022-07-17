@@ -1,15 +1,19 @@
 import { useLocation, useMatches, useNavigate } from "@remix-run/react";
+import { useEffect } from "react";
 import { chapters } from "~/repositories/chapters";
 
 const Navbar = () => {
   const navigate = useNavigate();
 
   const handleChangeSurah = (index: number) => {
-    navigate(`/?surah=${index}`, { replace: false });
+    const surahPosition = index + 1;
+    navigate(`/?surah=${surahPosition}`, { replace: false });
+    const quranContent = document.getElementById("quran-content");
+    quranContent!.scrollTop = 0
   };
 
   return (
-    <div className="navbar bg-base-300">
+    <div className="navbar bg-base-300 mx-auto max-w-2xl">
       <div className="navbar-start" />
       <div className="navbar-center">
         <div className="dropdown">
@@ -43,13 +47,13 @@ const Navbar = () => {
         </div>
       </div>
       <div className="navbar-end">
-        <div className="form-control">
+        {/* <div className="form-control">
           <input
             type="text"
             placeholder="Search"
             className="input input-bordered"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
