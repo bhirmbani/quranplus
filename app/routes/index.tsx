@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import SurahOptionsCard from "~/components/surah-options-card";
 import { copies, errors } from "~/repositories/messages";
 import { surahs } from "~/repositories/surahs";
 import { turnQueryParamsIntoObject } from "~/utils/string";
@@ -57,7 +58,7 @@ export default function Index() {
         <p className="text-center">
           {surah.name} - {surah.translation} - {surah.type}
         </p>
-        {surah.verses.map((each) => (
+        {surah.verses.map((each, verseIdx) => (
           <div className="border-b-2 mt-8" key={each.id}>
             <div className="flex flex-row">
               <div className="flex mx-5">
@@ -68,6 +69,10 @@ export default function Index() {
                 <p>{each.translation}</p>
               </div>
             </div>
+            <SurahOptionsCard
+              surahIdx={selectedSurah}
+              verseIdx={verseIdx}
+            />
           </div>
         ))}
         <div className="flex flex-row justify-between mx-5 mt-2">
@@ -130,7 +135,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
     Number(position.surah) > 114 ||
     Number(position.surah) < 1 ||
     typeof position.surah !== "number"
-      ? errors["id"]["ayah-not-found"]
+      ? errors["id"]["surah-not-found"]
       : error.message;
 
   return (

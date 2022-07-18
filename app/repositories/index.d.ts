@@ -10,12 +10,14 @@ type ChapterModel = {
 
 type TranslationEnum = "id";
 
+type VerseModel = {
+  id: number;
+  text: string;
+  translation: string;
+};
+
 type SurahModel = Omit<ChapterModel, "link"> & {
-  verses: {
-    id: number;
-    text: string;
-    translation: string;
-  }[];
+  verses: VerseModel[];
 };
 
 // generic extension type example
