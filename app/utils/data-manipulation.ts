@@ -12,7 +12,7 @@ export const generateVerseNumber = (
     }
     if (sIdx <= (surahIndex - 1)) {
       previousTotalVerses += surah.total_verses;
-      surah.verses.forEach((verse, vIdx) => {
+      surah.verses.forEach((_, vIdx) => {
         if (vIdx <= (versesIndex + 1)) {
           total = previousTotalVerses + versesIndex + 1;
         }

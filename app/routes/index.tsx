@@ -8,7 +8,10 @@ import { turnQueryParamsIntoObject } from "~/utils/string";
 
 export const loader: LoaderFunction = async (context) => {
   const params = new URL(context.request.url).searchParams;
-  const surahPos = params.get("surah");
+  if (params.values().next().value && params.has("surah") === false) {
+    throw new Error(errors["id"]["surah-not-found"]);
+  }
+  const surahPos = params.get("surah") || 1;
   const number = Number(surahPos);
   if (number < 1 || number > 114 || isNaN(number)) {
     throw new Error(errors["id"]["surah-not-found"]);
