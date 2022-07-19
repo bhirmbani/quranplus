@@ -1,22 +1,35 @@
-import { useLocation, useNavigate } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
+import { useLoaderData, useLocation, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import SurahOptionsCard from "~/components/surah-options-card";
 import { copies, errors } from "~/repositories/messages";
 import { surahs } from "~/repositories/surahs";
 import { turnQueryParamsIntoObject } from "~/utils/string";
 
-// export const loader: LoaderFunction = async (context) => {
-//   const params = new URL(context.request.url).searchParams;
-//   const surahPos = params.get("surah");
-//   if (Number(surahPos) > 114) {
-//     throw new Error(errors["id"]["ayah-not-found"]);
-//   }
-//   return null;
-// };
+export const loader: LoaderFunction = async (context) => {
+  const params = new URL(context.request.url).searchParams;
+  const surahPos = params.get("surah");
+  const surah = new Promise((resolve) => {
+    const currentSurah = surahs['id'][Number(surahPos) - 1]
+    const verseWithState = currentSurah.verses.map((verse) => ({
+      ...verse,
+      paused: true,
+      currentTime: 0,
+    }));
+    const response = {
+      ...currentSurah,
+      verses: verseWithState,
+    }
+    resolve(response)
+  })
+  return json(await surah);
+};
 
 export default function Index() {
   const location = useLocation();
   const navigate = useNavigate();
+  const loader = useLoaderData();
 
   const initialPosition = turnQueryParamsIntoObject(
     location.search || "?surah=1"
@@ -28,6 +41,10 @@ export default function Index() {
     Number(initialPosition.surah) - 1
   );
 
+  const [surahState, setSurahState] = useState<SurahModel>(loader);
+
+  const [versesWithState, setVersesState] = useState(loader.verses);
+
   useEffect(() => {
     const position = turnQueryParamsIntoObject(
       location.search || "?surah=1"
@@ -35,17 +52,9 @@ export default function Index() {
       surah: string;
     };
     setSelectedSurahIndex(Number(position.surah) - 1);
-  }, [location]);
-
-  const surah = surahs["id"][selectedSurahIndex];
-
-  const withState = surah.verses.map((verse) => ({
-    ...verse,
-    paused: true,
-    currentTime: 0,
-  }));
-
-  const [versesWithState, setVersesState] = useState(withState)
+    setSurahState(loader)
+    setVersesState(loader.verses)
+  }, [location, loader]);
 
   const handlePrevNextSurah = (id: "-" | "+") => {
     const surahPos =
@@ -62,10 +71,10 @@ export default function Index() {
         className="mx-auto my-5 prose prose-sm overflow-y-scroll hide-scrollbar scroll-smooth"
       >
         <h2 className="text-center">
-          {surah.transliteration} - {surah.total_verses} Ayat
+          {surahState.transliteration} - {surahState.total_verses} Ayat
         </h2>
         <p className="text-center">
-          {surah.name} - {surah.translation} - {surah.type}
+          {surahState.name} - {surahState.translation} - {surahState.type}
         </p>
         {versesWithState.map((verse, verseIdx) => (
           <div className="border-b-2 mt-8" key={verse.id}>
