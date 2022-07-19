@@ -20,5 +20,10 @@ type SurahModel = Omit<ChapterModel, "link"> & {
   verses: VerseModel[];
 };
 
+type VerseStateModel = {
+  paused: boolean;
+  currentTime: number;
+};
+
 // generic extension type example
 // type Extension<T> = T & { someExtensionProperty: string }

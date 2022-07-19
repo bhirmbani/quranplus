@@ -24,7 +24,7 @@ export default function Index() {
     surah: string;
   };
 
-  const [selectedSurah, setSelectedSurah] = useState(
+  const [selectedSurahIndex, setSelectedSurahIndex] = useState(
     Number(initialPosition.surah) - 1
   );
 
@@ -34,13 +34,22 @@ export default function Index() {
     ) as {
       surah: string;
     };
-    setSelectedSurah(Number(position.surah) - 1);
+    setSelectedSurahIndex(Number(position.surah) - 1);
   }, [location]);
 
-  const surah = surahs["id"][selectedSurah];
+  const surah = surahs["id"][selectedSurahIndex];
+
+  const withState = surah.verses.map((verse) => ({
+    ...verse,
+    paused: true,
+    currentTime: 0,
+  }));
+
+  const [versesWithState, setVersesState] = useState(withState)
 
   const handlePrevNextSurah = (id: "-" | "+") => {
-    const surahPos = id === "-" ? selectedSurah - 1 : selectedSurah + 1;
+    const surahPos =
+      id === "-" ? selectedSurahIndex - 1 : selectedSurahIndex + 1;
     navigate(`/?surah=${surahPos + 1}`, { replace: false });
     const quranContent = document.getElementById("quran-content");
     quranContent!.scrollTop = 0;
@@ -58,25 +67,28 @@ export default function Index() {
         <p className="text-center">
           {surah.name} - {surah.translation} - {surah.type}
         </p>
-        {surah.verses.map((each, verseIdx) => (
-          <div className="border-b-2 mt-8" key={each.id}>
+        {versesWithState.map((verse, verseIdx) => (
+          <div className="border-b-2 mt-8" key={verse.id}>
             <div className="flex flex-row">
               <div className="flex mx-5">
-                <p>{each.id}</p>
+                <p>{verse.id}</p>
               </div>
               <div className="flex flex-col mr-5">
-                <p className="text-2xl m-0">{each.text}</p>
-                <p>{each.translation}</p>
+                <p className="text-2xl m-0">{verse.text}</p>
+                <p>{verse.translation}</p>
               </div>
             </div>
             <SurahOptionsCard
-              surahIdx={selectedSurah}
+              surahIdx={selectedSurahIndex}
               verseIdx={verseIdx}
+              verse={verse}
+              setVersesState={setVersesState}
+              // setSelectedVerseIndex={setSelectedVerseIndex}
             />
           </div>
         ))}
         <div className="flex flex-row justify-between mx-5 mt-2">
-          {selectedSurah > 0 ? (
+          {selectedSurahIndex > 0 ? (
             <button
               onClick={() => handlePrevNextSurah("-")}
               className="btn btn-ghost btn-circle"
@@ -97,7 +109,7 @@ export default function Index() {
           ) : (
             <div />
           )}
-          {selectedSurah < 113 ? (
+          {selectedSurahIndex < 113 ? (
             <button
               onClick={() => handlePrevNextSurah("+")}
               className="btn btn-ghost btn-circle"

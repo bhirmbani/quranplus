@@ -1,29 +1,54 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { generateVerseNumber } from "~/utils/data-manipulation";
+
+type VersesState = VerseStateModel & VerseModel;
 
 type SurahOptionsCardType = {
   surahIdx: number;
   verseIdx: number;
+  setVersesState: Dispatch<SetStateAction<VersesState[]>>;
+  verse: VersesState;
 };
 
-const SurahOptionsCard = ({ surahIdx, verseIdx }: SurahOptionsCardType) => {
-  const [paused, setPaused] = useState(true);
-  const [currentTime, setCurrentTime] = useState(0);
+const SurahOptionsCard = ({
+  surahIdx,
+  verseIdx,
+  setVersesState,
+  verse,
+}: SurahOptionsCardType) => {
+
+  const generateNewState = (newState: VerseStateModel, pickedIndex: number) => {
+    setVersesState((prevState) => {
+      const newVerses = prevState.map((state, index) => {
+        if (pickedIndex === index) {
+          return { ...state, ...newState };
+        }
+        // reset state to original
+        return { ...state, paused: true, currentTime: 0 };
+      });
+      return newVerses;
+    });
+  };
+
   const handlePlayPauseButton = async () => {
     const audio = document.getElementById("verse-audio") as HTMLMediaElement;
     const number = generateVerseNumber(surahIdx, verseIdx);
-    if (paused) {
+    if (verse.paused) {
       audio.src = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${number}.mp3`;
-      audio.currentTime = audio.ended ? 0 : currentTime;
+      audio.currentTime = audio.ended ? 0 : verse.currentTime;
       audio.play();
-      setPaused(false);
-      setCurrentTime(audio.currentTime + 1);
+      generateNewState(
+        { paused: false, currentTime: audio.currentTime + 1 },
+        verseIdx
+      );
     } else {
       const time = audio.ended ? 0 : audio.currentTime;
-      setCurrentTime(time);
+      generateNewState({ paused: true, currentTime: time }, verseIdx);
       audio.pause();
-      setPaused(true);
     }
+    audio.addEventListener("ended", () => {
+      generateNewState({ paused: true, currentTime: 0 }, verseIdx);
+    });
   };
 
   return (
@@ -33,7 +58,7 @@ const SurahOptionsCard = ({ surahIdx, verseIdx }: SurahOptionsCardType) => {
         onClick={handlePlayPauseButton}
         className="btn btn-xs btn-ghost btn-circle"
       >
-        {!paused ? (
+        {!verse.paused ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
