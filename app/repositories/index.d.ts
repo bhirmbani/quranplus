@@ -25,5 +25,7 @@ type VerseStateModel = {
   currentTime: number;
 };
 
+type VersesState = VerseStateModel & VerseModel;
+
 // generic extension type example
 // type Extension<T> = T & { someExtensionProperty: string }

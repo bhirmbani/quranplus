@@ -1,6 +1,5 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import { json } from "@remix-run/cloudflare";
-import { useLoaderData, useLocation, useNavigate } from "@remix-run/react";
+import { useLocation, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import SurahOptionsCard from "~/components/surah-options-card";
 import { copies, errors } from "~/repositories/messages";
@@ -10,26 +9,17 @@ import { turnQueryParamsIntoObject } from "~/utils/string";
 export const loader: LoaderFunction = async (context) => {
   const params = new URL(context.request.url).searchParams;
   const surahPos = params.get("surah");
-  const surah = new Promise((resolve) => {
-    const currentSurah = surahs['id'][Number(surahPos) - 1]
-    const verseWithState = currentSurah.verses.map((verse) => ({
-      ...verse,
-      paused: true,
-      currentTime: 0,
-    }));
-    const response = {
-      ...currentSurah,
-      verses: verseWithState,
-    }
-    resolve(response)
-  })
-  return json(await surah);
+  const number = Number(surahPos);
+  if (number < 1 || number > 114 || isNaN(number)) {
+    throw new Error(errors["id"]["surah-not-found"]);
+  }
+
+  return null;
 };
 
 export default function Index() {
   const location = useLocation();
   const navigate = useNavigate();
-  const loader = useLoaderData();
 
   const initialPosition = turnQueryParamsIntoObject(
     location.search || "?surah=1"
@@ -37,13 +27,22 @@ export default function Index() {
     surah: string;
   };
 
-  const [selectedSurahIndex, setSelectedSurahIndex] = useState(
-    Number(initialPosition.surah) - 1
+  const surahPosition = Number(initialPosition.surah) - 1;
+
+  const [selectedSurahIndex, setSelectedSurahIndex] = useState(surahPosition);
+
+  const rawSurah = surahs["id"];
+  const initialVerseWithState = rawSurah[surahPosition].verses.map((verse) => ({
+    ...verse,
+    paused: true,
+    currentTime: 0,
+  }));
+
+  const [surahState, setSurahState] = useState<SurahModel>(
+    rawSurah[surahPosition]
   );
 
-  const [surahState, setSurahState] = useState<SurahModel>(loader);
-
-  const [versesWithState, setVersesState] = useState(loader.verses);
+  const [versesWithState, setVersesState] = useState(initialVerseWithState);
 
   useEffect(() => {
     const position = turnQueryParamsIntoObject(
@@ -51,10 +50,17 @@ export default function Index() {
     ) as {
       surah: string;
     };
-    setSelectedSurahIndex(Number(position.surah) - 1);
-    setSurahState(loader)
-    setVersesState(loader.verses)
-  }, [location, loader]);
+    const newSurahNumber = Number(position.surah) - 1;
+    setSelectedSurahIndex(newSurahNumber);
+    setSurahState(rawSurah[newSurahNumber]);
+    setVersesState(
+      rawSurah[newSurahNumber].verses.map((verse) => ({
+        ...verse,
+        paused: true,
+        currentTime: 0,
+      }))
+    );
+  }, [location, rawSurah]);
 
   const handlePrevNextSurah = (id: "-" | "+") => {
     const surahPos =
@@ -147,17 +153,6 @@ export default function Index() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const position = turnQueryParamsIntoObject(location.search || "?surah=1") as {
-    surah: string;
-  };
-
-  const errorMessage =
-    Number(position.surah) > 114 ||
-    Number(position.surah) < 1 ||
-    typeof position.surah !== "number"
-      ? errors["id"]["surah-not-found"]
-      : error.message;
 
   return (
     <div className="flex max-h-content h-screen">
@@ -165,7 +160,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
         id="quran-content"
         className="mx-auto my-5 prose prose-sm overflow-y-scroll hide-scrollbar scroll-smooth flex flex-col justify-center items-center"
       >
-        <p className="text-center text-red-800">{errorMessage}</p>
+        <p className="text-center text-red-800">{error.message}</p>
         <button
           onClick={() => navigate("/?surah=1", { replace: true })}
           className="btn btn-success btn-wide btn-sm"

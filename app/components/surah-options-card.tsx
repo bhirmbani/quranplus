@@ -1,7 +1,5 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import type { Dispatch, SetStateAction} from "react";
 import { generateVerseNumber } from "~/utils/data-manipulation";
-
-type VersesState = VerseStateModel & VerseModel;
 
 type SurahOptionsCardType = {
   surahIdx: number;
