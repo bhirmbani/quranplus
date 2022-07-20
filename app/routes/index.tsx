@@ -50,7 +50,9 @@ export default function Index() {
     rawSurah[surahPosition]
   );
 
-  const [versesWithState, setVersesState] = useState<VersesState[]>(initialVerseWithState);
+  const [versesWithState, setVersesState] = useState<VersesState[]>(
+    initialVerseWithState
+  );
 
   useEffect(() => {
     const position = turnQueryParamsIntoObject(
@@ -94,23 +96,52 @@ export default function Index() {
           {surahState.name} - {surahState.translation} - {surahState.type}
         </p>
         {versesWithState.map((verse, verseIdx) => (
-          <div id={`verse-${verse.id}`} className="border-b-2 mt-8" key={verse.id}>
+          <div
+            id={`verse-${verse.id}`}
+            className="border-b-2 mt-8"
+            key={verse.id}
+          >
             <div className="flex flex-row">
-              <div className="flex mx-5">
-                <p>{verse.id}</p>
+              <div className="flex flex-col items-start justify-around mx-2">
+                <div className="flex flex-col flex-1 justify-start items-center">
+                  <div className="flex">
+                    <div className="dropdown">
+                      <label
+                        tabIndex={0}
+                        className="btn btn-md btn-ghost btn-circle"
+                      >
+                        <span>
+                          {verse.id}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </span>
+                      </label>
+                      <div
+                        tabIndex={0}
+                        className="card compact dropdown-content shadow bg-base-100 rounded-box"
+                      >
+                        <SurahOptionsCard
+                          surahIdx={selectedSurahIndex}
+                          verseIdx={verseIdx}
+                          verse={verse}
+                          setVersesState={setVersesState}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="flex flex-col mr-5">
                 <p className="text-2xl m-0">{verse.text}</p>
                 <p>{verse.translation}</p>
               </div>
             </div>
-            <SurahOptionsCard
-              surahIdx={selectedSurahIndex}
-              verseIdx={verseIdx}
-              verse={verse}
-              setVersesState={setVersesState}
-              // setSelectedVerseIndex={setSelectedVerseIndex}
-            />
           </div>
         ))}
         <div className="flex flex-row justify-between mx-5 mt-2">
@@ -133,8 +164,24 @@ export default function Index() {
               </svg>
             </button>
           ) : (
-            <div />
+            <button className="invisible w-12" />
           )}
+          <button className="btn btn-ghost btn-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </button>
           {selectedSurahIndex < 113 ? (
             <button
               onClick={() => handlePrevNextSurah("+")}
@@ -154,7 +201,7 @@ export default function Index() {
               </svg>
             </button>
           ) : (
-            <div />
+            <button className="invisible w-12" />
           )}
         </div>
       </div>

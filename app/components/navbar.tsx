@@ -1,5 +1,4 @@
-import { useLocation, useMatches, useNavigate } from "@remix-run/react";
-import { useEffect } from "react";
+import { useNavigate } from "@remix-run/react";
 import { chapters } from "~/repositories/chapters";
 
 const Navbar = () => {
@@ -9,7 +8,7 @@ const Navbar = () => {
     const surahPosition = index + 1;
     navigate(`/?surah=${surahPosition}`, { replace: false });
     const quranContent = document.getElementById("quran-content");
-    quranContent!.scrollTop = 0
+    quranContent!.scrollTop = 0;
   };
 
   return (
