@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction} from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { generateVerseNumber } from "~/utils/data-manipulation";
 
 type SurahOptionsCardType = {
@@ -14,7 +14,6 @@ const SurahOptionsCard = ({
   setVersesState,
   verse,
 }: SurahOptionsCardType) => {
-
   const generateNewState = (newState: VerseStateModel, pickedIndex: number) => {
     setVersesState((prevState) => {
       const newVerses = prevState.map((state, index) => {
@@ -53,6 +52,7 @@ const SurahOptionsCard = ({
     <div className="mx-5 flex flex-row justify-around mb-5 card-bordered card card-body p-2">
       <audio id="verse-audio" />
       <button
+        id="verse-button"
         onClick={handlePlayPauseButton}
         className="btn btn-xs btn-ghost btn-circle"
       >

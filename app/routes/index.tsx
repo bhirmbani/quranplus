@@ -35,17 +35,22 @@ export default function Index() {
   const [selectedSurahIndex, setSelectedSurahIndex] = useState(surahPosition);
 
   const rawSurah = surahs["id"];
-  const initialVerseWithState = rawSurah[surahPosition].verses.map((verse) => ({
-    ...verse,
-    paused: true,
-    currentTime: 0,
-  }));
+  const initialVerseWithState = rawSurah[surahPosition].verses.map(
+    (verse, index) => {
+      return {
+        ...verse,
+        paused: true,
+        currentTime: 0,
+        end: rawSurah[surahPosition].verses.length === index + 1,
+      };
+    }
+  );
 
   const [surahState, setSurahState] = useState<SurahModel>(
     rawSurah[surahPosition]
   );
 
-  const [versesWithState, setVersesState] = useState(initialVerseWithState);
+  const [versesWithState, setVersesState] = useState<VersesState[]>(initialVerseWithState);
 
   useEffect(() => {
     const position = turnQueryParamsIntoObject(
@@ -57,11 +62,14 @@ export default function Index() {
     setSelectedSurahIndex(newSurahNumber);
     setSurahState(rawSurah[newSurahNumber]);
     setVersesState(
-      rawSurah[newSurahNumber].verses.map((verse) => ({
-        ...verse,
-        paused: true,
-        currentTime: 0,
-      }))
+      rawSurah[newSurahNumber].verses.map((verse, index) => {
+        return {
+          ...verse,
+          paused: true,
+          currentTime: 0,
+          end: rawSurah[newSurahNumber].verses.length === index + 1,
+        };
+      })
     );
   }, [location, rawSurah]);
 
@@ -86,7 +94,7 @@ export default function Index() {
           {surahState.name} - {surahState.translation} - {surahState.type}
         </p>
         {versesWithState.map((verse, verseIdx) => (
-          <div className="border-b-2 mt-8" key={verse.id}>
+          <div id={`verse-${verse.id}`} className="border-b-2 mt-8" key={verse.id}>
             <div className="flex flex-row">
               <div className="flex mx-5">
                 <p>{verse.id}</p>

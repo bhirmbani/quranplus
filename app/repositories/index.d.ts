@@ -23,6 +23,7 @@ type SurahModel = Omit<ChapterModel, "link"> & {
 type VerseStateModel = {
   paused: boolean;
   currentTime: number;
+  end?: boolean;
 };
 
 type VersesState = VerseStateModel & VerseModel;
