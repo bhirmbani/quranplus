@@ -49,7 +49,7 @@ const SurahOptionsCard = ({
   };
 
   return (
-    <div className="flex flex-row justify-around m-0 card-bordered card card-body p-2">
+    <div className="flex flex-column justify-around m-0 card-bordered card card-body p-2">
       <audio id="verse-audio" />
       <button
         id="verse-button"

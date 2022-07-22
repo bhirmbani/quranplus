@@ -1,9 +1,10 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import { useLocation, useNavigate } from "@remix-run/react";
+import { Link, useLocation, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import SurahOptionsCard from "~/components/surah-options-card";
 import { copies, errors } from "~/repositories/messages";
 import { surahs } from "~/repositories/surahs";
+import { generateVerseNumber } from "~/utils/data-manipulation";
 import { turnQueryParamsIntoObject } from "~/utils/string";
 
 export const loader: LoaderFunction = async (context) => {
@@ -96,50 +97,50 @@ export default function Index() {
           {surahState.name} - {surahState.translation} - {surahState.type}
         </p>
         {versesWithState.map((verse, verseIdx) => (
-          <div
-            id={`verse-${verse.id}`}
-            className="border-b-2 mt-8"
-            key={verse.id}
-          >
-            <div className="flex flex-row">
-              <div className="flex flex-col items-start justify-around mx-2">
-                <div className="flex flex-col flex-1 justify-start items-center">
-                  <div className="flex">
-                    <div className="dropdown">
-                      <label
-                        tabIndex={0}
-                        className="btn btn-md btn-ghost btn-circle"
-                      >
-                        <span>
-                          {verse.id}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                          </svg>
-                        </span>
-                      </label>
-                      <div
-                        tabIndex={0}
-                        className="card compact dropdown-content shadow bg-base-100 rounded-box"
-                      >
-                        <SurahOptionsCard
-                          surahIdx={selectedSurahIndex}
-                          verseIdx={verseIdx}
-                          verse={verse}
-                          setVersesState={setVersesState}
-                        />
+          <div key={verse.id} className="not-prose">
+            <div id={`verse-${verse.id}`} className="border-b-2 mt-8">
+              <div className="flex flex-row">
+                <div className="flex flex-col items-start justify-around mx-2">
+                  <div className="flex flex-col flex-1 justify-start items-center">
+                    <div className="flex">
+                      <div className="dropdown">
+                        <label
+                          tabIndex={0}
+                          className="btn btn-md btn-ghost btn-circle"
+                        >
+                          <span>
+                            {verse.id}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-5 w-5"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                            </svg>
+                          </span>
+                        </label>
+                        <div
+                          tabIndex={0}
+                          className="card compact dropdown-content shadow bg-base-100 rounded-box"
+                        >
+                          <SurahOptionsCard
+                            surahIdx={selectedSurahIndex}
+                            verseIdx={verseIdx}
+                            verse={verse}
+                            setVersesState={setVersesState}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col mr-5">
-                <p className="text-2xl m-0">{verse.text}</p>
-                <p>{verse.translation}</p>
+                <Link prefetch="intent" to={`tafsir/${selectedSurahIndex + 1}/${verseIdx + 1}`}>
+                  <div className="flex flex-col mr-5">
+                    <p className="text-2xl m-0">{verse.text}</p>
+                    <p className="my-4">{verse.translation}</p>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
