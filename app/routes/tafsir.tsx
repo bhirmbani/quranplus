@@ -1,9 +1,10 @@
-import { json, LoaderFunction } from "@remix-run/cloudflare";
+import type { LoaderFunction} from "@remix-run/cloudflare";
+import { redirect } from "@remix-run/cloudflare";
 import { Link, Outlet, useCatch, useNavigate } from "@remix-run/react";
 import { copies } from "~/repositories/messages";
 
 export const loader: LoaderFunction = async () => {
-  return json({ data: 'data from parent route' });
+  return redirect('/')
 };
 
 export default function TafsirRoot() {

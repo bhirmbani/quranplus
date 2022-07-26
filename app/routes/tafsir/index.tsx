@@ -1,70 +1,7 @@
-import { ActionFunction, json, LoaderFunction } from "@remix-run/cloudflare";
-import {
-  Form,
-  Link,
-  useActionData,
-  useCatch,
-  useLoaderData,
-  useMatches,
-  useNavigate,
-  useTransition,
-} from "@remix-run/react";
+import { Link, useCatch, useNavigate } from "@remix-run/react";
 import { copies } from "~/repositories/messages";
 
-// const somethings = [
-//   {
-//     title: "one",
-//     description: "this is one",
-//   },
-// ];
-
-export const loader: LoaderFunction = async ({ params }) => {
-  const somethings = [
-    {
-      title: "one",
-      description: "this is one",
-    },
-  ];
-  return json({ somethings });
-};
-
-const createSomething = async (body: {
-  title: string;
-  description: string;
-}) => {
-  // console.info(`${endpoints.sutanlab}${surahNumber}/${verseNumber}`);
-  // return await (
-  //   await fetch(`${endpoints.sutanlab}/surah/${surahNumber}/${verseNumber}`, { method: "GET"
-  // })
-  // ).json();
-
-  return {
-    code: 200,
-    message: "Success create something",
-    body,
-  };
-};
-
-export const action: ActionFunction = async ({ request }) => {
-  const body = await request.formData();
-  const somethingNew = Object.fromEntries(body);
-  console.log(somethingNew);
-  const project = await createSomething(somethingNew);
-  // somethings.push(somethingNew)
-  return project;
-  // return redirect(`/projects/${project.id}`);
-};
-
 export default function TafsirIndex() {
-  // const navigate = useNavigate();
-  // const randomSurah = Math.floor(Math.random() * 256);
-  // const randomAyah = Math.floor(Math.random() * 4);
-  // const matches = useMatches();
-  // console.log(matches);
-  const transition = useTransition();
-  const loader = useLoaderData();
-  const actionData = useActionData();
-  console.log(actionData, transition);
   return (
     <div className="flex max-h-content">
       <div id="quran-content" className="mx-auto my-5 prose prose-sm">
@@ -74,42 +11,6 @@ export default function TafsirIndex() {
         >
           {copies["id"]["random-surah-tafsir"]}
         </button> */}
-        <div className="flex flex-col">
-          <Form method="post">
-            <div className="flex flex-col">
-              <label>
-                Title: <input type="text" name="title" />
-              </label>
-              <label htmlFor="description">Description:</label>
-              <textarea name="description" id="description" />
-              <button
-                disabled={transition.submission}
-                className="btn btn-sm"
-                type="submit"
-              >
-                {transition.submission ? "Creating something..." : "Submit"}
-              </button>
-            </div>
-          </Form>
-          {loader.somethings.map((each) => (
-            <div key={each.title}>
-              <p>TITLE: {each.title}</p>
-              <p>DESCRIPTION: {each.description}</p>
-            </div>
-          ))}
-          {transition.submission ? (
-            <div key={Object.fromEntries(transition.submission.formData).title}>
-              <p>
-                TITLE:{" "}
-                {Object.fromEntries(transition.submission.formData).title}
-              </p>
-              <p>
-                DESCRIPTION:{" "}
-                {Object.fromEntries(transition.submission.formData).description}
-              </p>
-            </div>
-          ) : actionData && actionData.code === 400 ? 'try again' : null}
-        </div>
         <Link prefetch="intent" to={`/tafsir/${1}/${2}`}>
           {copies["id"]["random-surah-tafsir"]}
         </Link>

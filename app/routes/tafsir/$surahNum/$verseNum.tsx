@@ -1,8 +1,6 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import {
-  Link,
-  Outlet,
   useCatch,
   useLoaderData,
   useMatches,
@@ -14,7 +12,6 @@ import { getTafsirByVerse } from "~/services/tafsir";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { surahNum, verseNum } = params;
-  console.log(params);
   invariant(surahNum, "surahNum is required");
   invariant(verseNum, "verseNum is required");
   const data = await getTafsirByVerse(Number(verseNum), Number(surahNum));
@@ -38,9 +35,8 @@ export default function TafsirAyat() {
         <h2 className="text-center">Tafsir Pendek</h2>
         <p className="text-center">{matches[1].data.data}</p>
         <div className="mx-5">
-          <p>{loader.data.tafsir['id'].short}</p>
+          <p>{loader.data.tafsir["id"].short}</p>
         </div>
-        {/* <Outlet /> */}
       </div>
     </div>
   );
@@ -70,9 +66,7 @@ export function CatchBoundary() {
   const caught = useCatch();
   return (
     <div className="text-center mx-5">
-      <h1>
-        {caught.status}
-      </h1>
+      <h1>{caught.status}</h1>
       <p>{caught.data}</p>
     </div>
   );

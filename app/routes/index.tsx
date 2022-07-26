@@ -135,12 +135,10 @@ export default function Index() {
                     </div>
                   </div>
                 </div>
-                <Link prefetch="intent" to={`tafsir/${selectedSurahIndex + 1}/${verseIdx + 1}`}>
-                  <div className="flex flex-col mr-5">
-                    <p className="text-2xl m-0">{verse.text}</p>
-                    <p className="my-4">{verse.translation}</p>
-                  </div>
-                </Link>
+                <div className="flex flex-col mr-5">
+                  <p className="text-2xl m-0">{verse.text}</p>
+                  <p className="my-4">{verse.translation}</p>
+                </div>
               </div>
             </div>
           </div>

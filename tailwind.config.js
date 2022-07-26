@@ -6,6 +6,9 @@ module.exports = {
       maxHeight: {
         content: "82%",
       },
+      minHeight: {
+        content: "82%",
+      },
       height: {
         "navbar-dropdown": "300px",
       },
