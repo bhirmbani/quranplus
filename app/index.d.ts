@@ -52,5 +52,16 @@ type SutanlabTafsirVerseModel = {
   }
 };
 
+type ContentModel = {
+  surah_idx: number;
+  verse_idx: number;
+}
+
+type CollectionModel = {
+  id?: number;
+  name: string;
+  content?: ContentModel[];
+};
+
 // generic extension type example
 // type Extension<T> = T & { someExtensionProperty: string }
