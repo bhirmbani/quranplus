@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
+import { addContentToCollection } from "~/services/collection";
 import { generateVerseNumber } from "~/utils/data-manipulation";
 
 type SurahOptionsCardType = {
@@ -46,6 +47,18 @@ const SurahOptionsCard = ({
     audio.addEventListener("ended", () => {
       generateNewState({ paused: true, currentTime: 0 }, verseIdx);
     });
+  };
+
+  const addToCollection = async () => {
+    try {
+      await addContentToCollection(1, {
+        surah_idx: surahIdx,
+        verse_idx: verseIdx,
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
   return (
@@ -127,8 +140,11 @@ const SurahOptionsCard = ({
           />
         </svg>
       </button>
-      {/* archive */}
-      <button className="btn btn-xs btn-ghost btn-circle">
+      {/* collection */}
+      <button
+        onClick={addToCollection}
+        className="btn btn-xs btn-ghost btn-circle"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6"
@@ -140,7 +156,7 @@ const SurahOptionsCard = ({
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
           />
         </svg>
       </button>

@@ -14,6 +14,12 @@ export const addContentToCollection = async (
   newContent: ContentModel
 ) => {
   const collection = await db.collection.get({ id: collectionId });
+  // if no collection, create new collection
+  if (!collection) {
+    db.collection.add({ name: 'My Collection' }).then(id => {
+      return db.collection.get({ id })
+    })
+  }
   const content = collection?.content || [];
   content.push(newContent);
   await db.collection.update(collectionId, { content });
