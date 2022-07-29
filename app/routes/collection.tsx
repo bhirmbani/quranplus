@@ -21,6 +21,7 @@ export default function Collection() {
   const addCollection = async () => {
     try {
       await createNewCollection("New Collection");
+      // TODO: if zero to one collection, set selected collection to index 0, else dont
       setSelectedCollection(0);
     } catch (error) {
       console.error(error);
@@ -31,6 +32,10 @@ export default function Collection() {
   const collections = useLiveQuery(() => getCollections());
 
   const addToCollection = async (collectionId: number = 1) => {
+    // collectionId = 1 means collection array empty
+    if (collectionId === 1) {
+      setSelectedCollection(0);
+    }
     const randomSurah = Math.floor(Math.random() * 113);
     const verseLength = surahs["id"][randomSurah].verses.length;
     const randomVerse = Math.floor(Math.random() * verseLength);
@@ -161,7 +166,9 @@ export default function Collection() {
                       }`}
                     >
                       <div className="flex flex-1 items-center p-1">
-                        <p className="text-center text-sm text-white">{ellipsisText(each.name)}</p>
+                        <p className="text-center text-sm text-white">
+                          {ellipsisText(each.name)}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -307,7 +314,7 @@ export default function Collection() {
                   onClick={() => addToCollection()}
                   className="btn width-[50%] mt-2"
                 >
-                  {copies["id"]["add-random-collection"]}
+                  {copies["id"]["add-random-collection"]}s
                 </button>
               </div>
             </div>
