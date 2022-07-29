@@ -2,6 +2,7 @@ import { deleteCollection } from "~/services/collection";
 
 type CollectionOptionsCardType = {
   collectionId: number;
+  handleReselectCollection: () => void;
 };
 
 const handleDeleteCollection = async (id: number) => {
@@ -13,13 +14,19 @@ const handleDeleteCollection = async (id: number) => {
   }
 };
 
-const CollectionOptionsCard = ({ collectionId }: CollectionOptionsCardType) => {
+const CollectionOptionsCard = ({
+  collectionId,
+  handleReselectCollection,
+}: CollectionOptionsCardType) => {
   return (
     <div>
       <div className="flex flex-column justify-around m-0 card-bordered card card-body p-2">
         {/* delete */}
         <button
-          onClick={() => handleDeleteCollection(collectionId)}
+          onClick={() => {
+            handleReselectCollection();
+            handleDeleteCollection(collectionId);
+          }}
           className="btn btn-xs btn-ghost btn-circle"
         >
           <svg

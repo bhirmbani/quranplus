@@ -1,5 +1,4 @@
 import { copies } from "~/repositories/messages";
-import db from "~/models";
 import { ellipsisText } from "~/utils/string";
 import {
   addContentToCollection,
@@ -45,9 +44,18 @@ export default function Collection() {
     }
   };
 
+  const handleReselectCollection = async () => {
+    const collectionLength =
+      collections && collections[selectedCollection] && collections.length - 1;
+    if (collectionLength! === selectedCollection) {
+      setSelectedCollection(collectionLength! - 1);
+    }
+  };
+
   const handleDeleteCollection = async (collectionId: number) => {
     try {
       await deleteCollection(collectionId);
+      handleReselectCollection();
     } catch (error) {
       console.error(error);
       throw error;
@@ -68,7 +76,10 @@ export default function Collection() {
     }
   };
 
-  const collectionId = collections && collections[selectedCollection] && collections[selectedCollection].id;
+  const collectionId =
+    collections &&
+    collections[selectedCollection] &&
+    collections[selectedCollection].id;
 
   return (
     <div className="flex min-h-content">
@@ -226,6 +237,7 @@ export default function Collection() {
                         collectionId={
                           collections![selectedCollection].id as number
                         }
+                        handleReselectCollection={handleReselectCollection}
                       />
                     </DropdownOptions>
                   )}
@@ -290,24 +302,6 @@ export default function Collection() {
             </div>
           )}
         </div>
-
-        {/* <div className="flex flex-1 items-end">
-          <button className="btn btn-outline btn-block">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-            {copies["id"]["create-new-collection"]}
-          </button>
-        </div> */}
       </div>
     </div>
   );
