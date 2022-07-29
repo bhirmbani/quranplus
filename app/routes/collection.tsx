@@ -81,6 +81,15 @@ export default function Collection() {
     collections[selectedCollection] &&
     collections[selectedCollection].id;
 
+  const collectionName =
+    collections &&
+    collections[selectedCollection] &&
+    collections[selectedCollection].name;
+
+  const handlePrefilledName = () => {
+    setName(collectionName as string);
+  };
+
   return (
     <div className="flex min-h-content">
       {/* edit collection name modal */}
@@ -238,6 +247,7 @@ export default function Collection() {
                           collections![selectedCollection].id as number
                         }
                         handleReselectCollection={handleReselectCollection}
+                        handlePrefilledName={handlePrefilledName}
                       />
                     </DropdownOptions>
                   )}

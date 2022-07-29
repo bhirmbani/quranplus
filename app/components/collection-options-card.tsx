@@ -3,6 +3,7 @@ import { deleteCollection } from "~/services/collection";
 type CollectionOptionsCardType = {
   collectionId: number;
   handleReselectCollection: () => void;
+  handlePrefilledName: () => void;
 };
 
 const handleDeleteCollection = async (id: number) => {
@@ -17,6 +18,7 @@ const handleDeleteCollection = async (id: number) => {
 const CollectionOptionsCard = ({
   collectionId,
   handleReselectCollection,
+  handlePrefilledName
 }: CollectionOptionsCardType) => {
   return (
     <div>
@@ -46,6 +48,7 @@ const CollectionOptionsCard = ({
         </button>
         {/* edit */}
         <label
+          onClick={handlePrefilledName}
           htmlFor="edit-collection"
           className="btn btn-xs btn-ghost btn-circle"
         >
