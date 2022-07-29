@@ -19,7 +19,7 @@ class QuranPlusDB extends Dexie {
 export class Collection {
   id: number | undefined;
   name: string;
-  content: CollectionModel["content"] | undefined;
+  content: ContentModel[] | undefined;
 
   constructor(name: string, id?: number) {
     this.name = name;

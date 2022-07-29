@@ -12,6 +12,7 @@ export const copies = {
     "create-new-collection": "Buat koleksi baru",
     "your-collection": "Koleksi Kamu",
     "no-collection": "Kamu belum punya koleksi ayat. Mau coba tambah koleksi acak?",
-    "add-random-collection": "Tambah dong!"
+    "add-random-collection": "Boleh",
+    "edit-collection": "Beri nama koleksi kamu",
   },
 };

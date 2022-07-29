@@ -1,9 +1,10 @@
 type DropdownOptionsProps = {
   text: string;
   children: JSX.Element;
+  horizontal?: boolean;
 };
 
-const DropdownOptions = ({ text, children }: DropdownOptionsProps) => {
+const DropdownOptions = ({ text, children, horizontal = true }: DropdownOptionsProps) => {
   return (
     <div className="flex flex-col items-start justify-around mx-2">
       <div className="flex flex-col flex-1 justify-start items-center">
@@ -12,14 +13,25 @@ const DropdownOptions = ({ text, children }: DropdownOptionsProps) => {
             <label tabIndex={0} className="btn btn-md btn-ghost btn-circle">
               <span>
                 {text}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                </svg>
+                {horizontal ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                  </svg>
+                )}
               </span>
             </label>
             <div

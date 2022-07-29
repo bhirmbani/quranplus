@@ -89,7 +89,7 @@ export default function Index() {
     <div className="flex max-h-content">
       <div
         id="quran-content"
-        className="mx-auto my-5 prose prose-sm overflow-y-scroll hide-scrollbar scroll-smooth"
+        className="mx-auto my-5 prose prose-sm overflow-y-scroll scroll-smooth"
       >
         <h2 className="text-center">
           {surahState.transliteration} - {surahState.total_verses} Ayat

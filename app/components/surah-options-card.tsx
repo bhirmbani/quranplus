@@ -49,6 +49,7 @@ const SurahOptionsCard = ({
     });
   };
 
+  // TODO: msih error kalau sudah ada koleksion, tapi ID nya bukan 1
   const addToCollection = async () => {
     try {
       await addContentToCollection(1, {

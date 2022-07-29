@@ -1,28 +1,41 @@
 import { copies } from "~/repositories/messages";
 import db from "~/models";
 import { ellipsisText } from "~/utils/string";
-import { addContentToCollection, getCollections } from "~/services/collection";
-import { useEffect, useState } from "react";
+import {
+  addContentToCollection,
+  createNewCollection,
+  deleteCollection,
+  editCollectionName,
+  getCollections,
+} from "~/services/collection";
+import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { surahs } from "~/repositories/surahs";
 import DropdownOptions from "~/components/dropdown-options";
+import CollectionContentOptionsCard from "~/components/collection-content-options-card";
 import CollectionOptionsCard from "~/components/collection-options-card";
 
 export default function Collection() {
   const [selectedCollection, setSelectedCollection] = useState(0);
+  const [name, setName] = useState("");
 
   const add = async () => {
-    await db.collection.add({ name: "sasa" });
+    try {
+      await createNewCollection("New Collection");
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
   const collections = useLiveQuery(() => getCollections());
 
-  const addToCollection = async () => {
-    const randomSurah = Math.floor((Math.random() * 113))
-    const verseLength = surahs['id'][randomSurah].verses.length
-    const randomVerse = Math.floor((Math.random() * verseLength))
+  const addToCollection = async (collectionId: number = 1) => {
+    const randomSurah = Math.floor(Math.random() * 113);
+    const verseLength = surahs["id"][randomSurah].verses.length;
+    const randomVerse = Math.floor(Math.random() * verseLength);
     try {
-      await addContentToCollection(1, {
+      await addContentToCollection(collectionId, {
         surah_idx: randomSurah,
         verse_idx: randomVerse,
       });
@@ -32,13 +45,75 @@ export default function Collection() {
     }
   };
 
+  const handleDeleteCollection = async (collectionId: number) => {
+    try {
+      await deleteCollection(collectionId);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const handleChangeCollection = (collectionIndex: number) => {
+    setSelectedCollection(collectionIndex);
+  };
+
+  const handleEditName = async (collectionId: number, newName: string) => {
+    try {
+      await editCollectionName(collectionId, newName);
+      setName("");
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const collectionId = collections && collections[selectedCollection] && collections[selectedCollection].id;
+
   return (
     <div className="flex min-h-content">
+      {/* edit collection name modal */}
+      <input type="checkbox" id="edit-collection" className="modal-toggle" />
+      <div className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <div className="mb-2">
+            <label
+              htmlFor="edit-collection"
+              className="btn btn-xs btn-circle absolute right-6"
+            >
+              ✕
+            </label>
+            <h3 className="font-bold text-lg">
+              {copies["id"]["edit-collection"]}
+            </h3>
+          </div>
+          <input
+            value={name}
+            type="text"
+            onChange={(e) => setName(e.target.value)}
+            placeholder="..."
+            className="input input-bordered w-full"
+          />
+
+          <div className="modal-action">
+            <label
+              onClick={() => handleEditName(collectionId as number, name)}
+              htmlFor="edit-collection"
+              className="btn"
+            >
+              Ok
+            </label>
+          </div>
+        </div>
+      </div>
       <div className="flex flex-col flex-1 my-5 mx-5 overflow-x-scroll hide-scrollbar scroll-smooth min-h-screen">
-        <div className="w-full border-b-2 pb-5">
+        <div className="w-full border-b-2 pb-5 overflow-y-scroll hide-scrollbar">
           <div className="flex flex-col w-max">
             <div className="flex flex-row">
-              <button className="btn btn-outline min-h-[88px] min-w-[88px] rounded-2xl">
+              <button
+                onClick={add}
+                className="btn btn-outline min-h-[88px] min-w-[88px] rounded-2xl"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -54,13 +129,19 @@ export default function Collection() {
               </button>
               {collections &&
                 collections.length > 0 &&
-                collections.map((each) => (
-                  <div
-                    key={each.id}
-                    className="card bg-base-content mx-3 max-h-[88px] max-w-[88px]"
-                  >
-                    <div className="flex flex-1 items-center p-1">
-                      <p className="text-center text-white">{each.name}</p>
+                collections.map((each, idx) => (
+                  <div key={each.id}>
+                    <div
+                      onClick={() => handleChangeCollection(idx)}
+                      className={`card cursor-pointer items-center ml-5 min-h-[88px] min-w-[88px] max-h-[88px] max-w-[88px] ${
+                        idx === selectedCollection
+                          ? "bg-base-content"
+                          : "bg-base-300"
+                      }`}
+                    >
+                      <div className="flex flex-1 items-center p-1">
+                        <p className="text-center text-white">{each.name}</p>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -69,11 +150,101 @@ export default function Collection() {
         </div>
 
         <div className="overflow-x-scroll min-h-[60%]">
-          {collections && collections.length > 0 ? (
+          {/* if collection exist but content array empty */}
+          {collections &&
+            collections?.length > 0 &&
+            collections[selectedCollection] &&
+            collections[selectedCollection].content?.length === 0 && (
+              <div className="flex h-full items-center text-center justify-center">
+                <div className="flex flex-col items-center">
+                  <p>{copies["id"]["no-collection"]}</p>
+                  <button
+                    onClick={() =>
+                      addToCollection(collections[selectedCollection].id)
+                    }
+                    className="btn width-[50%] mt-2"
+                  >
+                    {copies["id"]["add-random-collection"]}
+                  </button>
+                  <div className="divider">OR</div>
+                  <button
+                    onClick={() =>
+                      handleDeleteCollection(
+                        collections![selectedCollection].id as number
+                      )
+                    }
+                    className="btn btn-warning width-[50%] mt-2"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              </div>
+            )}
+          {/* if collection exist but no content array exist */}
+          {collections &&
+            collections?.length > 0 &&
+            collections[selectedCollection] &&
+            !collections[selectedCollection].content && (
+              <div className="flex h-full items-center text-center justify-center">
+                <div className="flex flex-col items-center">
+                  <p>{copies["id"]["no-collection"]}</p>
+                  <button
+                    onClick={() =>
+                      addToCollection(collections[selectedCollection].id)
+                    }
+                    className="btn width-[50%] mt-2"
+                  >
+                    {copies["id"]["add-random-collection"]}
+                  </button>
+                  <div className="divider">OR</div>
+                  <button
+                    onClick={() =>
+                      handleDeleteCollection(
+                        collections![selectedCollection].id as number
+                      )
+                    }
+                    className="btn btn-warning width-[50%] mt-2"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              </div>
+            )}
+          {collections &&
+            collections?.length > 0 &&
+            collections[selectedCollection] &&
+            collections[selectedCollection].content && (
+              <div className="flex">
+                <button className="invisible w-12" />
+                <div className="flex items-center flex-1 justify-center">
+                  <p>{collections && collections[selectedCollection].name}</p>
+                </div>
+                <div className="flex justify-end">
+                  {collections && (
+                    <DropdownOptions horizontal={false} text="">
+                      <CollectionOptionsCard
+                        collectionId={
+                          collections![selectedCollection].id as number
+                        }
+                      />
+                    </DropdownOptions>
+                  )}
+                </div>
+              </div>
+            )}
+          {collections &&
+          collections.length > 0 &&
+          collections[selectedCollection] ? (
             collections[selectedCollection].content?.map((content, index) => (
-              <div className="flex flex-row prose my-2 border-b-2 pb-2" key={index}>
+              <div
+                className="flex flex-row prose my-2 border-b-2 pb-2"
+                key={index}
+              >
                 <DropdownOptions text={`${index + 1}`}>
-                  <CollectionOptionsCard />
+                  <CollectionContentOptionsCard
+                    collectionId={collections[selectedCollection].id as number}
+                    contentIdx={index}
+                  />
                 </DropdownOptions>
                 <div
                   className="flex flex-[0.8] items-start flex-col tooltip tooltip-bottom cursor-pointer"
@@ -88,11 +259,6 @@ export default function Collection() {
                     200
                   )}
                 >
-                  <div>
-                    <p className="m-0 truncate">
-                      {surahs["id"][content.surah_idx].name} - {surahs["id"][content.surah_idx].translation}
-                    </p>
-                  </div>
                   <p className="m-0">
                     {surahs["id"][content.surah_idx].transliteration}{" "}
                     {surahs["id"][content.surah_idx].id}:
@@ -101,19 +267,12 @@ export default function Collection() {
                         .id
                     }
                   </p>
-                  {/* <p className="m-0">
-                    {
-                      surahs["id"][content.surah_idx].verses[content.verse_idx]
-                        .text
-                    }
-                  </p>
-                  
-                  <p className="m-0">
-                    {
-                      surahs["id"][content.surah_idx].verses[content.verse_idx]
-                        .translation
-                    }
-                  </p> */}
+                  <div>
+                    <p className="m-0 truncate">
+                      {surahs["id"][content.surah_idx].name} -{" "}
+                      {surahs["id"][content.surah_idx].translation}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))
@@ -121,7 +280,10 @@ export default function Collection() {
             <div className="flex h-full items-center text-center justify-center">
               <div className="flex flex-col items-center">
                 <p>{copies["id"]["no-collection"]}</p>
-                <button onClick={addToCollection} className="btn width-[50%] mt-2">
+                <button
+                  onClick={() => addToCollection()}
+                  className="btn width-[50%] mt-2"
+                >
                   {copies["id"]["add-random-collection"]}
                 </button>
               </div>
@@ -147,6 +309,15 @@ export default function Collection() {
           </button>
         </div> */}
       </div>
+    </div>
+  );
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  return (
+    <div>
+      <p>{error.message}</p>
+      <p>{error.stack}</p>
     </div>
   );
 }
