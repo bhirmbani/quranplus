@@ -18,9 +18,10 @@ export default function Collection() {
   const [selectedCollection, setSelectedCollection] = useState(0);
   const [name, setName] = useState("");
 
-  const add = async () => {
+  const addCollection = async () => {
     try {
       await createNewCollection("New Collection");
+      setSelectedCollection(0);
     } catch (error) {
       console.error(error);
       throw error;
@@ -131,7 +132,7 @@ export default function Collection() {
           <div className="flex flex-col w-max">
             <div className="flex flex-row">
               <button
-                onClick={add}
+                onClick={addCollection}
                 className="btn btn-outline min-h-[88px] min-w-[88px] rounded-2xl"
               >
                 <svg
@@ -153,14 +154,14 @@ export default function Collection() {
                   <div key={each.id}>
                     <div
                       onClick={() => handleChangeCollection(idx)}
-                      className={`card cursor-pointer items-center ml-5 min-h-[88px] min-w-[88px] max-h-[88px] max-w-[88px] ${
+                      className={`card cursor-pointer text-ellipsis items-center ml-5 min-h-[88px] min-w-[88px] max-h-[88px] max-w-[88px] ${
                         idx === selectedCollection
                           ? "bg-base-content"
                           : "bg-base-300"
                       }`}
                     >
                       <div className="flex flex-1 items-center p-1">
-                        <p className="text-center text-white">{each.name}</p>
+                        <p className="text-center text-sm text-white">{ellipsisText(each.name)}</p>
                       </div>
                     </div>
                   </div>
@@ -236,7 +237,7 @@ export default function Collection() {
             collections[selectedCollection].content && (
               <div className="flex">
                 <button className="invisible w-12" />
-                <div className="flex items-center flex-1 justify-center">
+                <div className="flex items-center flex-1 justify-center text-center">
                   <p>{collections && collections[selectedCollection].name}</p>
                 </div>
                 <div className="flex justify-end">
