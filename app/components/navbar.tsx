@@ -1,14 +1,38 @@
 import { useNavigate } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { chapters } from "~/repositories/chapters";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [chapterState, setChapterState] = useState(chapters["id"]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleChangeSurah = (index: number) => {
     const surahPosition = index + 1;
     navigate(`/?surah=${surahPosition}`, { replace: false });
     const quranContent = document.getElementById("quran-content");
     quranContent!.scrollTop = 0;
+  };
+
+  const handleSearch = (verseName: string) => {
+    setSearchTerm(verseName);
+    const cleanName = verseName
+      .toLowerCase()
+      .replace(/['-\s]/g, "")
+      .trim();
+    const filtered = chapters["id"].filter((each) => {
+      const clean = each.transliteration
+        .toLowerCase()
+        .replace(/['-\s]/g, "")
+        .trim();
+      return clean.indexOf(cleanName) > -1;
+    });
+    setChapterState(filtered);
+  };
+
+  const handleResetSearch = () => {
+    setSearchTerm("");
+    setChapterState(chapters["id"]);
   };
 
   return (
@@ -35,8 +59,22 @@ const Navbar = () => {
             tabIndex={0}
             className="overflow-hidden overflow-y-scroll h-navbar-dropdown menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
-            {chapters["id"].map((each, index) => (
-              <li onClick={() => handleChangeSurah(index)} key={each.id}>
+            <div className="flex justify-center sticky top-0 z-10 mb-1">
+              <input
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                type="text"
+                placeholder="Search"
+                className="input input-bordered input-sm w-[90%]"
+              />
+              {searchTerm.length > 0 && (
+                <label onClick={handleResetSearch} className="btn btn-xs btn-circle absolute right-4 top-1">
+                  ✕
+                </label>
+              )}
+            </div>
+            {chapterState.map((each) => (
+              <li onClick={() => handleChangeSurah(each.id - 1)} key={each.id}>
                 <a>
                   ({each.id}) {each.transliteration} - {each.total_verses}
                 </a>
