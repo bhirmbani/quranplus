@@ -167,7 +167,7 @@ export default function Collection() {
                     >
                       <div className="flex flex-1 items-center p-1">
                         <p className="text-center text-sm text-white">
-                          {ellipsisText(each.name)}
+                          {ellipsisText(each.name, 20)}
                         </p>
                       </div>
                     </div>
