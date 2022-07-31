@@ -18,18 +18,19 @@ export default function Collection() {
   const [selectedCollection, setSelectedCollection] = useState(0);
   const [name, setName] = useState("");
 
+  const collections = useLiveQuery(() => getCollections());
+
+  const collectionLength = collections && collections.length;
+
   const addCollection = async () => {
     try {
       await createNewCollection("New Collection");
-      // TODO: if zero to one collection, set selected collection to index 0, else dont
-      setSelectedCollection(0);
+      setSelectedCollection(collectionLength! > 0 ? collectionLength! : 0);
     } catch (error) {
       console.error(error);
       throw error;
     }
   };
-
-  const collections = useLiveQuery(() => getCollections());
 
   const addToCollection = async (collectionId: number = 1) => {
     // collectionId = 1 means collection array empty
@@ -243,11 +244,11 @@ export default function Collection() {
             collections[selectedCollection] &&
             collections[selectedCollection].content && (
               <div className="flex">
-                <button className="invisible w-12" />
+                <button className="invisible w-12 ml-1" />
                 <div className="flex items-center flex-1 justify-center text-center">
                   <p>{collections && collections[selectedCollection].name}</p>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-end mr-1">
                   {collections && (
                     <DropdownOptions horizontal={false} text="">
                       <CollectionOptionsCard
@@ -314,7 +315,7 @@ export default function Collection() {
                   onClick={() => addToCollection()}
                   className="btn width-[50%] mt-2"
                 >
-                  {copies["id"]["add-random-collection"]}s
+                  {copies["id"]["add-random-collection"]}
                 </button>
               </div>
             </div>

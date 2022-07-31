@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { addContentToCollection } from "~/services/collection";
+import { addContentToCollection, getLatestCollectionId } from "~/services/collection";
 import { generateVerseNumber } from "~/utils/data-manipulation";
 
 type SurahOptionsCardType = {
@@ -49,10 +49,11 @@ const SurahOptionsCard = ({
     });
   };
 
-  // TODO: msih error kalau sudah ada koleksion, tapi ID nya bukan 1
   const addToCollection = async () => {
     try {
-      await addContentToCollection(1, {
+      // TODO: if collection length > 1, save to collection with id collectionLength - 1
+      const latestId = await getLatestCollectionId() as number || 1;
+      await addContentToCollection(latestId, {
         surah_idx: surahIdx,
         verse_idx: verseIdx,
       });
@@ -107,23 +108,6 @@ const SurahOptionsCard = ({
           </svg>
         )}
       </button>
-      {/* bookmark */}
-      <button className="btn btn-xs btn-ghost btn-circle">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-          />
-        </svg>
-      </button>
       {/* check */}
       <button className="btn btn-xs btn-ghost btn-circle">
         <svg
@@ -138,6 +122,23 @@ const SurahOptionsCard = ({
             strokeLinecap="round"
             strokeLinejoin="round"
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </button>
+      {/* bookmark */}
+      <button className="btn btn-xs btn-ghost btn-circle">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
           />
         </svg>
       </button>
