@@ -86,14 +86,36 @@ export default function Index() {
   };
 
   return (
-    <div className="flex max-h-content">
+    <div className="flex flex-col max-h-content">
+      <div>
+        <div className="prose prose-sm flex justify-center mt-5 mb-4 min-w-full">
+          <h2 className="text-center m-0 mr-0.5">
+            {surahState.transliteration} - {surahState.total_verses} Ayat
+          </h2>
+          <div className="flex items-center">
+            <button className="btn btn-xs btn-ghost btn-circle">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         id="quran-content"
-        className="mx-auto my-5 prose prose-sm overflow-y-scroll scroll-smooth"
+        className="mx-auto mb-5 prose prose-sm overflow-y-scroll scroll-smooth"
       >
-        <h2 className="text-center">
-          {surahState.transliteration} - {surahState.total_verses} Ayat
-        </h2>
         <p className="text-center">
           {surahState.name} - {surahState.translation} - {surahState.type}
         </p>

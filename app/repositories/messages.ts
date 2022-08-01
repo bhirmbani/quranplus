@@ -15,5 +15,15 @@ export const copies = {
     "add-random-collection": "Boleh",
     "edit-collection": "Beri nama koleksi kamu",
     "move-verse": "Mau pindahkan kemana?",
+    "title-help": {
+      "play-icon": "Dengarkan ayat ini",
+      "pause-icon": "Pause suara ayat ini",
+      "check-icon": "Saya hafal luar kepala surat/ayat ini",
+      "bookmark-icon": "Tandai ayat ini sebagai terakhir dibaca",
+      "collection-icon": "Simpan ayat ini ke koleksi",
+      "edit-icon": "Edit nama koleksi",
+      "delete-icon": "Hapus ayat/koleksi ini",
+      "move-content-icon": "Pindahkan ayat ini ke koleksi lain",
+    }
   },
 };

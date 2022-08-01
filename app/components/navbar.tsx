@@ -1,6 +1,10 @@
 import { useNavigate } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { chapters } from "~/repositories/chapters";
+import { copies } from "~/repositories/messages";
+import DropdownOptions from "./dropdown-options";
+import { BookmarkIcon, CheckIcon, CollectionIcon, DeleteIcon, EditIcon, MoveContentCollectionIcon, PauseIcon, PlayIcon } from "./icon";
+import TitleOptionsCard from "./title-options.card";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -37,6 +41,66 @@ const Navbar = () => {
 
   return (
     <div className="navbar bg-base-300 mx-auto max-w-2xl">
+      <input type="checkbox" id="info-title" className="modal-toggle" />
+      <div className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <div className="mb-2">
+            <label
+              htmlFor="info-title"
+              className="btn btn-xs btn-circle absolute right-6"
+            >
+              ✕
+            </label>
+            <h3 className="font-bold text-lg">Help</h3>
+          </div>
+
+          <div className="prose prose-sm">
+            <div className="flex-row items-center">
+              <div className="flex items-center">
+                <PlayIcon />
+                <p className="ml-2 my-2">{copies["id"]["title-help"]["play-icon"]}</p>
+              </div>
+              <div className="flex items-center">
+                <PauseIcon />
+                <p className="ml-2 my-2">{copies["id"]["title-help"]["pause-icon"]}</p>
+              </div>
+              <div className="flex items-center">
+                <CheckIcon />
+                <p className="ml-2 my-2">{copies["id"]["title-help"]["check-icon"]}</p>
+              </div>
+              <div className="flex items-center">
+                <BookmarkIcon />
+                <p className="ml-2 my-2">{copies["id"]["title-help"]["bookmark-icon"]}</p>
+              </div>
+              <div className="flex items-center">
+                <CollectionIcon />
+                <p className="ml-2 my-2">{copies["id"]["title-help"]["collection-icon"]}</p>
+              </div>
+              <div className="flex items-center">
+                <EditIcon />
+                <p className="ml-2 my-2">{copies["id"]["title-help"]["edit-icon"]}</p>
+              </div>
+              <div className="flex items-center">
+                <DeleteIcon />
+                <p className="ml-2 my-2">{copies["id"]["title-help"]["delete-icon"]}</p>
+              </div>
+              <div className="flex items-center">
+                <MoveContentCollectionIcon />
+                <p className="ml-2 my-2">{copies["id"]["title-help"]["move-content-icon"]}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* <div className="modal-action">
+            <label
+              htmlFor="info-title"
+              className="btn"
+            >
+              Ok
+            </label>
+          </div> */}
+        </div>
+      </div>
       <div className="navbar-start" />
       <div className="navbar-center">
         <div className="dropdown">
@@ -68,7 +132,10 @@ const Navbar = () => {
                 className="input input-bordered input-sm w-[90%]"
               />
               {searchTerm.length > 0 && (
-                <label onClick={handleResetSearch} className="btn btn-xs btn-circle absolute right-4 top-1">
+                <label
+                  onClick={handleResetSearch}
+                  className="btn btn-xs btn-circle absolute right-4 top-1"
+                >
                   ✕
                 </label>
               )}
@@ -84,13 +151,9 @@ const Navbar = () => {
         </div>
       </div>
       <div className="navbar-end">
-        {/* <div className="form-control">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input input-bordered"
-          />
-        </div> */}
+        <DropdownOptions horizontal={false} text="">
+          <TitleOptionsCard />
+        </DropdownOptions>
       </div>
     </div>
   );
