@@ -6,6 +6,7 @@ import {
   deleteCollection,
   editCollectionName,
   getCollections,
+  moveContentToCollection,
 } from "~/services/collection";
 import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -17,6 +18,12 @@ import CollectionOptionsCard from "~/components/collection-options-card";
 export default function Collection() {
   const [selectedCollection, setSelectedCollection] = useState(0);
   const [name, setName] = useState("");
+  const [moveVersePayload, setMoveVersePayload] = useState({
+    source: {
+      collectionId: 0,
+      contentIdx: 0,
+    },
+  });
 
   const collections = useLiveQuery(() => getCollections());
 
@@ -83,6 +90,32 @@ export default function Collection() {
     }
   };
 
+  const handleMoveVerse = async () => {
+    const destinationContent =
+      collections &&
+      collections[selectedCollection] &&
+      collections[selectedCollection].content![
+        moveVersePayload.source.contentIdx
+      ];
+    const destinationCollectionIdEl = document.getElementById(
+      "collection-destination-select"
+    ) as unknown as HTMLSelectElement;
+
+    try {
+      await moveContentToCollection({
+        source: moveVersePayload.source,
+        destination: {
+          collectionId: Number(destinationCollectionIdEl.value),
+          surah_idx: destinationContent!.surah_idx,
+          verse_idx: destinationContent!.verse_idx,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
   const collectionId =
     collections &&
     collections[selectedCollection] &&
@@ -126,6 +159,49 @@ export default function Collection() {
             <label
               onClick={() => handleEditName(collectionId as number, name)}
               htmlFor="edit-collection"
+              className="btn"
+            >
+              Ok
+            </label>
+          </div>
+        </div>
+      </div>
+      {/* move verse modal */}
+      <input type="checkbox" id="move-verse" className="modal-toggle" />
+      <div className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <div className="mb-2">
+            <label
+              htmlFor="move-verse"
+              className="btn btn-xs btn-circle absolute right-6"
+            >
+              ✕
+            </label>
+            <h3 className="font-bold text-lg">{copies["id"]["move-verse"]}</h3>
+          </div>
+
+          <select
+            id="collection-destination-select"
+            className="select select-bordered min-w-full max-w-xs"
+          >
+            {collections &&
+              collections.length > 0 &&
+              collections.map((each) => {
+                if (each.id !== collectionId) {
+                  return (
+                    <option key={each.id} value={each.id}>
+                      {each.name}
+                    </option>
+                  );
+                }
+                return null;
+              })}
+          </select>
+
+          <div className="modal-action">
+            <label
+              onClick={handleMoveVerse}
+              htmlFor="move-verse"
               className="btn"
             >
               Ok
@@ -275,6 +351,8 @@ export default function Collection() {
                   <CollectionContentOptionsCard
                     collectionId={collections[selectedCollection].id as number}
                     contentIdx={index}
+                    collectionLength={collectionLength!}
+                    setMoveVersePayload={setMoveVersePayload}
                   />
                 </DropdownOptions>
                 <div

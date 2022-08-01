@@ -14,5 +14,6 @@ export const copies = {
     "no-collection": "Kamu belum punya koleksi ayat. Mau coba tambah koleksi acak?",
     "add-random-collection": "Boleh",
     "edit-collection": "Beri nama koleksi kamu",
+    "move-verse": "Mau pindahkan kemana?",
   },
 };

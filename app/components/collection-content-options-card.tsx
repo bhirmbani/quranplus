@@ -1,8 +1,12 @@
+import type { Dispatch, SetStateAction } from "react";
 import { deleteContentCollection } from "~/services/collection";
+import type { MoveContentPayload } from "~/services/collection.type";
 
 type CollectionContenOptionsCardType = {
   collectionId: number;
   contentIdx: number;
+  collectionLength: number;
+  setMoveVersePayload: Dispatch<SetStateAction<MoveContentPayload>>;
 };
 
 const handleDeleteContent = async (id: number, idx: number) => {
@@ -17,20 +21,36 @@ const handleDeleteContent = async (id: number, idx: number) => {
 const CollectionContentOptionsCard = ({
   collectionId,
   contentIdx,
+  collectionLength,
+  setMoveVersePayload,
 }: CollectionContenOptionsCardType) => {
   return (
     <div className="flex flex-column justify-around m-0 card-bordered card card-body p-2">
       {/* move */}
-      <button className="btn btn-xs btn-ghost btn-circle">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+      {collectionLength > 1 && (
+        <label
+          onClick={() =>
+            setMoveVersePayload((prevState) => ({
+              ...prevState,
+              source: {
+                collectionId,
+                contentIdx,
+              },
+            }))
+          }
+          htmlFor="move-verse"
+          className="btn btn-xs btn-ghost btn-circle"
         >
-          <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z" />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z" />
+          </svg>
+        </label>
+      )}
       {/* delete */}
       <button
         onClick={() => handleDeleteContent(collectionId, contentIdx)}

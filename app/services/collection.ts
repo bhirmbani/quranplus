@@ -1,4 +1,5 @@
 import db from "~/models";
+import type { MoveContentPayload } from "./collection.type";
 
 export const getCollections = async () => {
   const collections = await db.collection.toArray();
@@ -58,4 +59,22 @@ export const editCollectionName = async (
   name: string
 ) => {
   await db.collection.update(collectionId, { name });
+};
+
+export const moveContentToCollection = async ({
+  source,
+  destination,
+}: MoveContentPayload & {
+  destination: {
+    collectionId: number;
+    surah_idx: number;
+    verse_idx: number;
+  };
+}) => {
+  await addContentToCollection(destination.collectionId, {
+    surah_idx: destination.surah_idx,
+    verse_idx: destination.verse_idx,
+  });
+
+  await deleteContentCollection(source.collectionId, source.contentIdx);
 };
