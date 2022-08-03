@@ -21,9 +21,10 @@ type SurahModel = Omit<ChapterModel, "link"> & {
 };
 
 type VerseStateModel = {
-  paused: boolean;
-  currentTime: number;
+  paused?: boolean;
+  currentTime?: number;
   end?: boolean;
+  memorized?: boolean;
 };
 
 type VersesState = VerseStateModel & VerseModel;
@@ -47,20 +48,46 @@ type SutanlabTafsirVerseModel = {
       id: {
         short: string;
         long: string;
-      }
-    }
-  }
+      };
+    };
+  };
 };
 
 type ContentModel = {
   surah_idx: number;
   verse_idx: number;
-}
+};
 
 type CollectionModel = {
   id?: number;
   name: string;
   content?: ContentModel[];
+};
+
+type SurahAndVerseModel = {
+  date: Date;
+  count: number;
+};
+
+type StatisticModel = {
+  id?: number;
+  last_read: {
+    verse_idx: number;
+    surah_idx: number;
+  };
+  daily_checkin: {
+    last_date: Date;
+    streak: number;
+  };
+  memorized: {
+    surah: number;
+    verse: number;
+    data: Record<number, number[]>[]; // [{ surah_idx: [verse_idx] }]
+    progress: {
+      surah: SurahAndVerseModel[];
+      verse: SurahAndVerseModel[];
+    };
+  };
 };
 
 // generic extension type example

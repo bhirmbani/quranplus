@@ -1,11 +1,12 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import { Link, useLocation, useNavigate } from "@remix-run/react";
+import { useLocation, useNavigate } from "@remix-run/react";
+import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 import DropdownOptions from "~/components/dropdown-options";
 import SurahOptionsCard from "~/components/surah-options-card";
 import { copies, errors } from "~/repositories/messages";
 import { surahs } from "~/repositories/surahs";
-import { generateVerseNumber } from "~/utils/data-manipulation";
+import { getStatistics } from "~/services/stats";
 import { turnQueryParamsIntoObject } from "~/utils/string";
 
 export const loader: LoaderFunction = async (context) => {
@@ -26,6 +27,8 @@ export default function Index() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const statistics = useLiveQuery(() => getStatistics());
+
   const initialPosition = turnQueryParamsIntoObject(
     location.search || "?surah=1"
   ) as {
@@ -36,6 +39,10 @@ export default function Index() {
 
   const [selectedSurahIndex, setSelectedSurahIndex] = useState(surahPosition);
 
+  const statsMemorizedData = statistics && statistics[0] && statistics[0].memorized.data;
+
+  const memorizedVersesOfCurrentSurah = statsMemorizedData && statsMemorizedData.find(each => Number(Object.keys(each)) === selectedSurahIndex);
+ 
   const rawSurah = surahs["id"];
   const initialVerseWithState = rawSurah[surahPosition].verses.map(
     (verse, index) => {
@@ -65,17 +72,25 @@ export default function Index() {
     const newSurahNumber = Number(position.surah) - 1;
     setSelectedSurahIndex(newSurahNumber);
     setSurahState(rawSurah[newSurahNumber]);
+    const checkIsVerseMemorized = (verseIdx: number) => {
+      if (memorizedVersesOfCurrentSurah === undefined) {
+        return false
+      } else {
+        return memorizedVersesOfCurrentSurah![selectedSurahIndex].includes(verseIdx)
+      }
+    }
     setVersesState(
       rawSurah[newSurahNumber].verses.map((verse, index) => {
         return {
           ...verse,
           paused: true,
           currentTime: 0,
+          memorized: checkIsVerseMemorized(index),
           end: rawSurah[newSurahNumber].verses.length === index + 1,
         };
       })
     );
-  }, [location, rawSurah]);
+  }, [location.search, rawSurah, memorizedVersesOfCurrentSurah, selectedSurahIndex]);
 
   const handlePrevNextSurah = (id: "-" | "+") => {
     const surahPos =
