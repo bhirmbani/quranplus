@@ -66,6 +66,7 @@ type CollectionModel = {
 
 type SurahAndVerseModel = {
   date: Date;
+  updated_date: Date;
   count: number;
 };
 

@@ -27,8 +27,8 @@ export const updateStatistics = async (
         verse: 0,
         data: [],
         progress: {
-          surah: [{ date: new Date(), count: 0 }],
-          verse: [{ date: new Date(), count: 0 }],
+          surah: [{ date: new Date(), count: 0, updated_date: new Date() }],
+          verse: [{ date: new Date(), count: 0, updated_date: new Date() }],
         },
       },
     });
@@ -79,10 +79,9 @@ export const updateMemorized = async ({
   const countVerse = memorize ? verse + 1 : verse - 1;
 
   const processData = () => {
-    const newState = data.map((each, idx) => {
+    const newState = data.map((each) => {
       // if surah idx stored in data is same as surah idx that user pick
       if (Number(Object.keys(each)) === surahIdx) {
-        console.log("sini");
         let newVerses = [];
         if (memorize) {
           newVerses = [...each[surahIdx], verseIdx];
@@ -112,28 +111,45 @@ export const updateMemorized = async ({
       surah: progress.surah.map((eachSurah) => {
         if (eachSurah.date.toDateString() === new Date().toDateString()) {
           return {
-            date: new Date(),
+            date: eachSurah.date,
+            updated_date: new Date(),
             count: type === "surah" ? countSurah : surah,
           };
         }
-        return {
-          date: new Date(),
-          count: type === "surah" ? countSurah : surah,
-        };
+        return { ...eachSurah };
       }),
       verse: progress.verse.map((eachVerse) => {
         if (eachVerse.date.toDateString() === new Date().toDateString()) {
           return {
-            date: new Date(),
+            date: eachVerse.date,
+            updated_date: new Date(),
             count: type === "verse" ? countVerse : verse,
           };
         }
-        return {
-          date: new Date(),
-          count: type === "verse" ? countVerse : verse,
-        };
+        return { ...eachVerse };
       }),
     };
+
+    const isVerseProgressDontHaveTodayDate = progress.verse.find(
+      (each) => each.date.toDateString() === new Date().toDateString()
+    );
+    if (isVerseProgressDontHaveTodayDate === undefined) {
+      newProgress.verse.push({
+        date: new Date(),
+        updated_date: new Date(),
+        count: type === "verse" ? countVerse : verse,
+      });
+    }
+    const isSurahProgressDontHaveTodayDate = progress.surah.find(
+      (each) => each.date.toDateString() === new Date().toDateString()
+    );
+    if (isSurahProgressDontHaveTodayDate === undefined) {
+      newProgress.surah.push({
+        date: new Date(),
+        updated_date: new Date(),
+        count: type === "surah" ? countSurah : surah,
+      });
+    }
     return newProgress;
   };
 
