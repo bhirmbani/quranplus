@@ -45,10 +45,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/pnpm-lock') }}
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
