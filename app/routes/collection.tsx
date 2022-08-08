@@ -341,63 +341,68 @@ export default function Collection() {
             )}
           {collections &&
           collections.length > 0 &&
-          collections[selectedCollection] ? (
-            collections[selectedCollection].content?.map((content, index) => (
-              <div
-                className="flex flex-row prose my-2 border-b-2 pb-2"
-                key={index}
-              >
-                <DropdownOptions text={`${index + 1}`}>
-                  <CollectionContentOptionsCard
-                    collectionId={collections[selectedCollection].id as number}
-                    contentIdx={index}
-                    collectionLength={collectionLength!}
-                    setMoveVersePayload={setMoveVersePayload}
-                  />
-                </DropdownOptions>
+          collections[selectedCollection]
+            ? collections[selectedCollection].content?.map((content, index) => (
                 <div
-                  className="flex flex-[0.8] items-start flex-col tooltip tooltip-bottom cursor-pointer"
-                  data-tip={ellipsisText(
-                    `${
-                      surahs["id"][content.surah_idx].verses[content.verse_idx]
-                        .text
-                    }\n${
-                      surahs["id"][content.surah_idx].verses[content.verse_idx]
-                        .translation
-                    }`,
-                    200
-                  )}
+                  className="flex flex-row prose my-2 border-b-2 pb-2"
+                  key={index}
                 >
-                  <p className="m-0">
-                    {surahs["id"][content.surah_idx].transliteration}{" "}
-                    {surahs["id"][content.surah_idx].id}:
-                    {
-                      surahs["id"][content.surah_idx].verses[content.verse_idx]
-                        .id
-                    }
-                  </p>
-                  <div>
-                    <p className="m-0 truncate">
-                      {surahs["id"][content.surah_idx].name} -{" "}
-                      {surahs["id"][content.surah_idx].translation}
+                  <DropdownOptions text={`${index + 1}`}>
+                    <CollectionContentOptionsCard
+                      collectionId={
+                        collections[selectedCollection].id as number
+                      }
+                      contentIdx={index}
+                      collectionLength={collectionLength!}
+                      setMoveVersePayload={setMoveVersePayload}
+                    />
+                  </DropdownOptions>
+                  <div
+                    className="flex flex-[0.8] items-start flex-col tooltip tooltip-bottom cursor-pointer"
+                    data-tip={ellipsisText(
+                      `${
+                        surahs["id"][content.surah_idx].verses[
+                          content.verse_idx
+                        ].text
+                      }\n${
+                        surahs["id"][content.surah_idx].verses[
+                          content.verse_idx
+                        ].translation
+                      }`,
+                      200
+                    )}
+                  >
+                    <p className="m-0">
+                      {surahs["id"][content.surah_idx].transliteration}{" "}
+                      {surahs["id"][content.surah_idx].id}:
+                      {
+                        surahs["id"][content.surah_idx].verses[
+                          content.verse_idx
+                        ].id
+                      }
                     </p>
+                    <div>
+                      <p className="m-0 truncate">
+                        {surahs["id"][content.surah_idx].name} -{" "}
+                        {surahs["id"][content.surah_idx].translation}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className="flex h-full items-center text-center justify-center">
-              <div className="flex flex-col items-center">
-                <p>{copies["id"]["no-collection"]}</p>
-                <button
-                  onClick={() => addToCollection()}
-                  className="btn width-[50%] mt-2"
-                >
-                  {copies["id"]["add-random-collection"]}
-                </button>
-              </div>
-            </div>
-          )}
+              ))
+            : collections !== undefined && (
+                <div className="flex h-full items-center text-center justify-center">
+                  <div className="flex flex-col items-center">
+                    <p>{copies["id"]["no-collection"]}</p>
+                    <button
+                      onClick={() => addToCollection()}
+                      className="btn width-[50%] mt-2"
+                    >
+                      {copies["id"]["add-random-collection"]}
+                    </button>
+                  </div>
+                </div>
+              )}
         </div>
       </div>
     </div>
