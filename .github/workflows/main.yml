@@ -45,9 +45,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
@@ -56,6 +53,10 @@ jobs:
         with:
           node-version: 16
           cache: "pnpm"
+      - uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       # deploy
       - name: deploy to cloudflare workers
