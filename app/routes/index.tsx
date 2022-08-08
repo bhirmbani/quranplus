@@ -3,10 +3,11 @@ import { useLocation, useNavigate } from "@remix-run/react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 import DropdownOptions from "~/components/dropdown-options";
+import { CheckFilledIcon, CheckIcon } from "~/components/icon";
 import SurahOptionsCard from "~/components/surah-options-card";
 import { copies, errors } from "~/repositories/messages";
 import { surahs } from "~/repositories/surahs";
-import { getStatistics } from "~/services/stats";
+import { getStatistics, updateStatistics } from "~/services/stats";
 import { turnQueryParamsIntoObject } from "~/utils/string";
 
 export const loader: LoaderFunction = async (context) => {
@@ -39,10 +40,15 @@ export default function Index() {
 
   const [selectedSurahIndex, setSelectedSurahIndex] = useState(surahPosition);
 
-  const statsMemorizedData = statistics && statistics[0] && statistics[0].memorized.data;
+  const statsMemorizedData =
+    statistics && statistics[0] && statistics[0].memorized.data;
 
-  const memorizedVersesOfCurrentSurah = statsMemorizedData && statsMemorizedData.find(each => Number(Object.keys(each)) === selectedSurahIndex);
- 
+  const memorizedVersesOfCurrentSurah =
+    statsMemorizedData &&
+    statsMemorizedData.find(
+      (each) => Number(Object.keys(each)) === selectedSurahIndex
+    );
+
   const rawSurah = surahs["id"];
   const initialVerseWithState = rawSurah[surahPosition].verses.map(
     (verse, index) => {
@@ -63,6 +69,14 @@ export default function Index() {
     initialVerseWithState
   );
 
+  const checkSurahMemorizedExist =
+    statsMemorizedData?.find(
+      (each) => Number(Object.keys(each)) === selectedSurahIndex
+    ) || {};
+
+
+  const isSurahMemorized = checkSurahMemorizedExist && checkSurahMemorizedExist[selectedSurahIndex] && checkSurahMemorizedExist[selectedSurahIndex].length === surahState.verses.length;
+
   useEffect(() => {
     const position = turnQueryParamsIntoObject(
       location.search || "?surah=1"
@@ -74,11 +88,13 @@ export default function Index() {
     setSurahState(rawSurah[newSurahNumber]);
     const checkIsVerseMemorized = (verseIdx: number) => {
       if (memorizedVersesOfCurrentSurah === undefined) {
-        return false
+        return false;
       } else {
-        return memorizedVersesOfCurrentSurah![selectedSurahIndex].includes(verseIdx)
+        return memorizedVersesOfCurrentSurah[selectedSurahIndex].includes(
+          verseIdx
+        );
       }
-    }
+    };
     setVersesState(
       rawSurah[newSurahNumber].verses.map((verse, index) => {
         return {
@@ -90,7 +106,12 @@ export default function Index() {
         };
       })
     );
-  }, [location.search, rawSurah, memorizedVersesOfCurrentSurah, selectedSurahIndex]);
+  }, [
+    location.search,
+    rawSurah,
+    memorizedVersesOfCurrentSurah,
+    selectedSurahIndex,
+  ]);
 
   const handlePrevNextSurah = (id: "-" | "+") => {
     const surahPos =
@@ -99,6 +120,22 @@ export default function Index() {
     const quranContent = document.getElementById("quran-content");
     quranContent!.scrollTop = 0;
   };
+
+  const handleMemorizeSurah = () => {
+    setVersesState((prevState) => {
+      return prevState.map((each) => ({
+        ...each,
+        memorized: !isSurahMemorized,
+      }));
+    });
+    updateStatistics("memorized", {
+      type: "surah",
+      memorize: !isSurahMemorized,
+      surahIdx: selectedSurahIndex,
+    });
+  };
+
+  // console.log('AWAL:', statistics && statistics[0] && statistics[0].memorized);
 
   return (
     <div className="flex flex-col max-h-content">
@@ -177,21 +214,11 @@ export default function Index() {
           ) : (
             <button className="invisible w-12" />
           )}
-          <button className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <button
+            onClick={handleMemorizeSurah}
+            className="btn btn-ghost btn-circle"
+          >
+            {isSurahMemorized ? <CheckFilledIcon /> : <CheckIcon />}
           </button>
           {selectedSurahIndex < 113 ? (
             <button
