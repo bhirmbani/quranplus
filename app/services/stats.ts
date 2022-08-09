@@ -169,8 +169,9 @@ export const updateMemorized = async ({
   };
 
   if (type === "surah" && memorize) {
-    // MARK if surah is memorized and already on data, then increment verses by surah length - verse that already memorized OR
-    // id not already on data, then increment verses by surah length - 0
+    // MARK if surah is memorized and some surah's verse already
+    // memorized then increment verses by surah length - verse that already memorized OR
+    // if not already on data, then increment verses by surah length - 0
     const toDecrement = newPayload.data[surahIdx]
       ? newPayload.data[surahIdx][surahIdx].length
       : 0;
@@ -190,7 +191,7 @@ export const updateMemorized = async ({
       return { ...each };
     });
 
-    // MARK if surah is memorized, add all verse index of this surah that not yet added to data
+    // MARK if surah is memorized, add all unmemorized verse index of this surah to the data
     newPayload.data[surahIdx] = {
       [surahIdx]: surahs["id"][surahIdx].verses.map((_, idx) => idx),
     };
@@ -261,15 +262,15 @@ export const updateMemorized = async ({
     }
   }
 
-  // console.log(newPayload);
+  console.log(newPayload);
 
-  await db.statistic.update(id, {
-    ...stats[0],
-    memorized: {
-      ...stats[0].memorized,
-      ...newPayload,
-    },
-  });
+  // await db.statistic.update(id, {
+  //   ...stats[0],
+  //   memorized: {
+  //     ...stats[0].memorized,
+  //     ...newPayload,
+  //   },
+  // });
 
   return newPayload;
 };
