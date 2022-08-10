@@ -226,7 +226,10 @@ export const updateMemorized = async ({
       newPayload.data[surahIdx][surahIdx].length !==
       surahs["id"][surahIdx].total_verses
     ) {
-      newPayload.surah = newPayload.surah === 0 ? 0 : newPayload.surah - 1;
+      const memorizedSurah = newPayload.data.filter((each, idx) => {
+        return each[idx].length === surahs["id"][idx].total_verses;
+      });
+      newPayload.surah = memorizedSurah.length;
       newPayload.progress.surah = newPayload.progress.surah.map((each) => {
         if (each.date.toDateString() === new Date().toDateString()) {
           return {
@@ -247,7 +250,10 @@ export const updateMemorized = async ({
     const versesOfSelectedSurah = newPayload.data.filter(
       (each) => Number(Object.keys(each)) === surahIdx
     );
-    if (versesOfSelectedSurah.length === surahs["id"][surahIdx].total_verses) {
+    if (
+      versesOfSelectedSurah[0][surahIdx].length ===
+      surahs["id"][surahIdx].total_verses
+    ) {
       newPayload.surah = newPayload.surah + 1;
       newPayload.progress.surah = newPayload.progress.surah.map((each) => {
         if (each.date.toDateString() === new Date().toDateString()) {
@@ -262,15 +268,13 @@ export const updateMemorized = async ({
     }
   }
 
-  console.log(newPayload);
-
-  // await db.statistic.update(id, {
-  //   ...stats[0],
-  //   memorized: {
-  //     ...stats[0].memorized,
-  //     ...newPayload,
-  //   },
-  // });
+  await db.statistic.update(id, {
+    ...stats[0],
+    memorized: {
+      ...stats[0].memorized,
+      ...newPayload,
+    },
+  });
 
   return newPayload;
 };

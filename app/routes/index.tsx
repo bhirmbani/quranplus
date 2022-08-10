@@ -135,8 +135,6 @@ export default function Index() {
     });
   };
 
-  console.log('AWAL:', statistics && statistics[0] && statistics[0].memorized);
-
   return (
     <div className="flex flex-col max-h-content">
       <div>

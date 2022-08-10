@@ -7,11 +7,15 @@ import {
   memorizeOneSurahWithVerseAlreadyMemorizedExpectedResult,
   memorizeOneVerseExpectedResult,
   memorizeOneVerseWithDifferentDate,
+  surahMinOneVerseBeingMemorizedStateExpectedResult,
   unmemorizeOneVerseExpectedResult,
+  unmemorizeTwoVerseInSuccessionExpectedResult,
 } from "~/__mocks__/statistic.service.expected";
 import {
   inititalStateMemorized,
-  memorizedStateSomeSurahMemorized,
+  someVerseMemorizedState,
+  surahMinOneVerseBeingMemorizedState,
+  twoSurahMemorizedState,
 } from "~/__mocks__/statistic.service.mockdata";
 
 // const constantDate = new Date("2018-01-01T12:00:00");
@@ -194,7 +198,7 @@ describe("memorize one surah with some verse of this surah already memorized", (
         last_date: new Date(),
         streak: 0,
       },
-      memorized: memorizedStateSomeSurahMemorized,
+      memorized: someVerseMemorizedState,
     });
   });
   test("should increment verses by surah length minus verse that already memorized", async () => {
@@ -211,32 +215,62 @@ describe("memorize one surah with some verse of this surah already memorized", (
   });
 });
 
-// describe("memorize one surah and no verses of this surah memorized before", () => {
-//   beforeEach(() => {
-//     jest.useFakeTimers();
-//     jest.setSystemTime(new Date("2022-08-08T11:29:45.549Z"));
-//     db.statistic.add({
-//       last_read: {
-//         verse_idx: 0,
-//         surah_idx: 0,
-//       },
-//       daily_checkin: {
-//         last_date: new Date(),
-//         streak: 0,
-//       },
-//       memorized: memorizedStateSomeSurahMemorized,
-//     });
-//   });
-//   test("should increment verses by surah length and add all verse index to data", async () => {
-//     const surahIdx = 113;
-//     const memorizeSurahResult = await updateStatistics("memorized", {
-//       type: "surah",
-//       memorize: true,
-//       surahIdx,
-//     });
+describe("surah A and surah B already memorized, then unmemorize one verse from surah A twice in succession", () => {
+  const surahIdx = 113;
+  const verseIdx = 4;
+  beforeEach(async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(createdDate);
+    db.statistic.add({
+      last_read: {
+        verse_idx: 0,
+        surah_idx: 0,
+      },
+      daily_checkin: {
+        last_date: new Date(),
+        streak: 0,
+      },
+      memorized: twoSurahMemorizedState,
+    });
+  });
 
-//     expect(memorizeSurahResult).toMatchObject(
-//       memorizeOneSurahWithVerseAlreadyMemorizedExpectedResult
-//     );
-//   });
-// });
+  test("should decrement surah count correctly", async () => {
+    const result = await updateStatistics("memorized", {
+      type: "verse",
+      memorize: false,
+      surahIdx,
+      verseIdx,
+    });
+    expect(result).toMatchObject(unmemorizeTwoVerseInSuccessionExpectedResult);
+  });
+});
+
+describe("surah A is n-1 verse from being memorized, then memorized last verse of this surah", () => {
+  const surahIdx = 113;
+  const verseIdx = 5;
+  beforeEach(async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(createdDate);
+    db.statistic.add({
+      last_read: {
+        verse_idx: 0,
+        surah_idx: 0,
+      },
+      daily_checkin: {
+        last_date: new Date(),
+        streak: 0,
+      },
+      memorized: surahMinOneVerseBeingMemorizedState,
+    });
+  });
+
+  test("should increment surah count correctly", async () => {
+    const result = await updateStatistics("memorized", {
+      type: "verse",
+      memorize: true,
+      surahIdx,
+      verseIdx,
+    });
+    expect(result).toMatchObject(surahMinOneVerseBeingMemorizedStateExpectedResult);
+  });
+});
