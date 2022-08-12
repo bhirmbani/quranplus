@@ -15,6 +15,10 @@ export const copies = {
     "add-random-collection": "Boleh",
     "edit-collection": "Beri nama koleksi kamu",
     "move-verse": "Mau pindahkan kemana?",
+    "surah": "Surat",
+    "verse": "Ayat",
+    "stats-title": "Jumlah surat dan ayat yang kamu sudah hafal",
+    "your-stats": "Statistik kamu",
     "title-help": {
       "play-icon": "Dengarkan ayat ini",
       "pause-icon": "Pause suara ayat ini",

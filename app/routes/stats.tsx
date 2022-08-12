@@ -1,32 +1,162 @@
 import { useLiveQuery } from "dexie-react-hooks";
+import { copies } from "~/repositories/messages";
 import { getStatistics } from "~/services/stats";
+import Chart from "react-frappe-charts";
+import { formatDate, formatDateDayJs } from "~/utils/time-manipulation";
+import { InfoIcon } from "~/components/icon";
 
 export default function Stats() {
   const statistics = useLiveQuery(() => getStatistics());
 
-  console.log(statistics);
+  const statisticsReady = statistics && statistics[0] && statistics[0];
+
+  const surahProgressFirstDate =
+    statisticsReady?.memorized.progress.surah[0].date;
+  const surahProgressLatestDate =
+    statisticsReady?.memorized.progress.surah[
+      statisticsReady?.memorized.progress.surah.length - 1
+    ].date;
+
+  const verseProgressFirstDate =
+    statisticsReady?.memorized.progress.verse[0].date;
+  const verseProgressLatestDate =
+    statisticsReady?.memorized.progress.verse[
+      statisticsReady?.memorized.progress.verse.length - 1
+    ].date;
+
+  // timestamp in second
+  // Math. floor(Date.now() / 1000)
+
+  // only return the last 7 days
+  const verseProgressChartDate = statisticsReady?.memorized.progress.verse
+    .slice(-7)
+    .map((each) => {
+      return formatDateDayJs(each.date);
+    });
+
+  const verseProgressChartCount = statisticsReady?.memorized.progress.verse
+    .slice(-7)
+    .map((each) => {
+      return each.count;
+    });
+
+  const surahProgressChartCount = statisticsReady?.memorized.progress.surah
+    .slice(-7)
+    .map((each) => {
+      return each.count;
+    });
+
+  // let verseProgressChartData: Record<number, number> = {};
+  // let surahProgressChartData: Record<number, number> = {};
+
+  // statisticsReady?.memorized.progress.verse.forEach((each) => {
+  //   verseProgressChartData[Math.floor(new Date(each.date).getTime() / 1000)] =
+  //     each.count;
+  // });
+  // statisticsReady?.memorized.progress.surah.forEach((each) => {
+  //   surahProgressChartData[Math.floor(new Date(each.date).getTime() / 1000)] =
+  //     each.count;
+  // });
+
+  // console.log(verseProgressChartData);
+
   return (
-    <div className="min-h-content">
-      <div className="stats stats-vertical md:stats-horizontal shadow min-w-full">
-        <div className="stat">
-          <div className="stat-title">Downloads</div>
-          <div className="stat-value">31K</div>
-          <div className="stat-desc">Jan 1st - Feb 1st</div>
+    statistics !== undefined && (
+      <div className="flex flex-col max-h-content">
+        <div className="prose prose-sm flex justify-center mt-5 mb-4 min-w-full">
+          <h2 className="text-center m-0 mr-0.5">Statistik kamu</h2>
+          <div className="flex items-center">
+            <button className="btn btn-xs btn-ghost btn-circle">
+              <InfoIcon />
+            </button>
+          </div>
         </div>
+        <div>
+          <div className="mb-5 prose prose-sm overflow-y-scroll scroll-smooth min-w-full">
+            <div className="flex flex-row">
+              <div className="stat">
+                <div className="stat-title">{copies["id"].surah}</div>
+                <div className="stat-value">
+                  {statisticsReady?.memorized.surah}
+                </div>
+                <div className="stat-desc">{`${formatDate(
+                  surahProgressFirstDate!
+                )} - ${formatDate(surahProgressLatestDate!)}`}</div>
+              </div>
 
-        <div className="stat">
-          <div className="stat-title">New Users</div>
-          <div className="stat-value">4,200</div>
-          <div className="stat-desc">↗︎ 400 (22%)</div>
-        </div>
+              <div className="stat">
+                <div className="stat-title">{copies["id"].verse}</div>
+                <div className="stat-value">
+                  {statisticsReady?.memorized.verse}
+                </div>
+                <div className="stat-desc">{`${formatDate(
+                  verseProgressFirstDate!
+                )} - ${formatDate(verseProgressLatestDate!)}`}</div>
+              </div>
+            </div>
 
-        <div className="stat">
-          <div className="stat-title">New Registers</div>
-          <div className="stat-value">1,200</div>
-          <div className="stat-desc">↘︎ 90 (14%)</div>
+            <div className="min-w-full flex justify-center">
+              <p className="prose prose-sm m-0">
+                Kemajuan hafalan Quran kamu 7 hari terakhir
+              </p>
+            </div>
+            <div className="w-full">
+              <Chart
+                type="line"
+                // colors={["#21ba45"]}
+                axisOptions={{
+                  xAxisMode: "tick",
+                  yAxisMode: "tick",
+                  xIsSeries: 1,
+                }}
+                // height={700}
+                data={{
+                  // dataPoints: surahProgressChartData,
+                  // start: decrementTime(
+                  //   surahProgressFirstDate as Date,
+                  //   2,
+                  //   "months"
+                  // ).toDate(),
+                  // end: surahProgressLatestDate,
+                  labels: verseProgressChartDate,
+                  datasets: [
+                    {
+                      values: surahProgressChartCount as number[],
+                      name: "surat",
+                    },
+                    {
+                      values: verseProgressChartCount as number[],
+                      name: "ayat",
+                    },
+                  ],
+                }}
+              />
+              {/* <Chart
+            type="heatmap"
+            // colors={["#21ba45"]}
+            axisOptions={{
+              xAxisMode: "tick",
+              yAxisMode: "tick",
+              xIsSeries: 1,
+            }}
+            // height={200}
+            data={{
+              dataPoints: verseProgressChartData,
+              start: decrementTime(
+                verseProgressFirstDate as Date,
+                2,
+                "months"
+              ).toDate(),
+              end: verseProgressLatestDate,
+              // labels: verseProgressChartDate,
+              // datasets: [{ values: verseProgressChartCount as number[] }],
+            }}
+          /> */}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 }
 

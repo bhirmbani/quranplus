@@ -168,6 +168,7 @@ export const updateMemorized = async ({
     progress: processProgress(),
   };
 
+  // TODO: bug at surah memorize, when surah have partial verse memorized, then user directly memorized surah, surah count on progress not same as surah count
   if (type === "surah" && memorize) {
     // MARK if surah is memorized and some surah's verse already
     // memorized then increment verses by surah length - verse that already memorized OR
