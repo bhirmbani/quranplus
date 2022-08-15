@@ -19,8 +19,25 @@ export function links() {
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "New Remix App",
+  title: "QuranPlus",
+  description:
+    "Aplikasi Baca dan Menghafal Quran Gratis, Simpel, Menarik, Cepat dan Mudah Digunakan.",
   viewport: "width=device-width,initial-scale=1",
+  // open graph/facebook
+  "og:description":
+    "Aplikasi Baca dan Menghafal Quran Gratis, Simpel, Menarik, Cepat dan Mudah Digunakan.",
+  //facebook
+  "og:type": "website",
+  "og:url": "https://quranplus.xyz",
+  "og:title": "QuranPlus",
+  "og:image": "",
+  // twitter
+  "twitter:card": "summary_large_image",
+  "twitter:url": "https://quranplus.xyz",
+  "twitter:title": "QuranPlus",
+  "twitter:description":
+    "Aplikasi Baca dan Menghafal Quran Gratis, Simpel, Menarik, Cepat dan Mudah Digunakan.",
+  "twitter:image": "",
 });
 
 export default function App() {
