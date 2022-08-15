@@ -60,9 +60,11 @@ export default function Stats() {
 
   // console.log(verseProgressChartData);
 
+  // TODO: check error on prod site
+
   return (
     statistics !== undefined && (
-      <div className="flex flex-col max-h-content">
+      <div className="flex flex-col min-h-content">
         <div className="prose prose-sm flex justify-center mt-5 mb-4 min-w-full">
           <h2 className="text-center m-0 mr-0.5">Statistik kamu</h2>
           <div className="flex items-center">
@@ -71,8 +73,8 @@ export default function Stats() {
             </button>
           </div>
         </div>
-        <div>
-          <div className="mb-5 prose prose-sm overflow-y-scroll scroll-smooth min-w-full">
+        <div className="flex flex-1">
+          <div className="mb-5 prose prose-sm overflow-y-scroll scroll-smooth min-w-full flex flex-col justify-between">
             <div className="flex flex-row">
               <div className="stat">
                 <div className="stat-title">{copies["id"].surah}</div>
@@ -97,10 +99,10 @@ export default function Stats() {
 
             <div className="min-w-full flex justify-center">
               <p className="prose prose-sm m-0">
-                Kemajuan hafalan Quran kamu 7 hari terakhir
+                Kemajuan hafalan Quran kamu <span className="underline align-super">BETA</span>
               </p>
             </div>
-            <div className="w-full">
+            <div className="max-w-full">
               <Chart
                 type="line"
                 // colors={["#21ba45"]}

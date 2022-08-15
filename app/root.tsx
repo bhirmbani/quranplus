@@ -26,18 +26,19 @@ export const meta: MetaFunction = () => ({
   // open graph/facebook
   "og:description":
     "Aplikasi Baca dan Menghafal Quran Gratis, Simpel, Menarik, Cepat dan Mudah Digunakan.",
+  "og:site_name": "QuranPlus",
   //facebook
   "og:type": "website",
   "og:url": "https://quranplus.xyz",
   "og:title": "QuranPlus",
-  "og:image": "",
+  "og:image": "https://quranplus.xyz/main.png",
   // twitter
   "twitter:card": "summary_large_image",
   "twitter:url": "https://quranplus.xyz",
   "twitter:title": "QuranPlus",
   "twitter:description":
     "Aplikasi Baca dan Menghafal Quran Gratis, Simpel, Menarik, Cepat dan Mudah Digunakan.",
-  "twitter:image": "",
+  "twitter:image": "https://quranplus.xyz/main.png",
 });
 
 export default function App() {
