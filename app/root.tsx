@@ -1,4 +1,6 @@
-import type { MetaFunction } from "@remix-run/cloudflare";
+import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
+import { initializeApp } from "firebase/app";
 import {
   Link,
   Links,
@@ -8,14 +10,28 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
+  useLoaderData,
 } from "@remix-run/react";
 import Navbar from "./components/navbar";
 import NavbarBottom from "./components/bottom-nav";
 import styles from "./styles/app.css";
+// import { getEnv } from "./env.server";
 
 export function links() {
   return [{ rel: "stylesheet", href: styles }];
 }
+
+// type LoaderData = {
+//   ENV: ReturnType<typeof getEnv>;
+// };
+
+export const loader: LoaderFunction = async ({ request }) => {
+  console.log(request)
+  // return json<LoaderData>({
+  //   ENV: getEnv(),
+  // });
+  return null
+};
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -42,6 +58,21 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function App() {
+  // const data = useLoaderData() as LoaderData;
+  // console.log(data)
+
+  // const firebaseConfig = {
+  //   apiKey: data.ENV.FIREBASE_APIKEY,
+  //   authDomain: data.ENV.FIREBASE_AUTHDOMAIN,
+  //   projectId: data.ENV.FIREBASE_PROJECTID,
+  //   storageBucket: data.ENV.FIREBASE_STORAGEBUCKET,
+  //   messagingSenderId: data.ENV.FIREBASE_MESSAGINGSENDERID,
+  //   appId: data.ENV.FIREBASE_APPID,
+  //   measurementId: data.ENV.FIREBASE_MEASUREMENTID,
+  // };
+
+  // Initialize Firebase
+  // initializeApp(firebaseConfig);
   return (
     <html lang="en">
       <head>
@@ -56,6 +87,11 @@ export default function App() {
         </>
         <ScrollRestoration />
         <Scripts />
+        {/* <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+          }}
+        /> */}
         <LiveReload port={8002} />
       </body>
     </html>
