@@ -17,6 +17,8 @@ export default function Stats() {
       statisticsReady?.memorized.progress.surah.length - 1
     ].date;
 
+  console.log(surahProgressFirstDate);
+
   const verseProgressFirstDate =
     statisticsReady?.memorized.progress.verse[0].date;
   const verseProgressLatestDate =
@@ -82,8 +84,8 @@ export default function Stats() {
                   {statisticsReady?.memorized.surah}
                 </div>
                 <div className="stat-desc">{`${formatDate(
-                  surahProgressFirstDate!
-                )} - ${formatDate(surahProgressLatestDate!)}`}</div>
+                  surahProgressFirstDate || new Date()
+                )} - ${formatDate(surahProgressLatestDate || new Date())}`}</div>
               </div>
 
               <div className="stat">
@@ -92,8 +94,8 @@ export default function Stats() {
                   {statisticsReady?.memorized.verse}
                 </div>
                 <div className="stat-desc">{`${formatDate(
-                  verseProgressFirstDate!
-                )} - ${formatDate(verseProgressLatestDate!)}`}</div>
+                  verseProgressFirstDate || new Date()
+                )} - ${formatDate(verseProgressLatestDate || new Date())}`}</div>
               </div>
             </div>
 
