@@ -1,6 +1,6 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
-import { json } from "@remix-run/cloudflare";
 import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import {
   Link,
   Links,
@@ -15,23 +15,11 @@ import {
 import Navbar from "./components/navbar";
 import NavbarBottom from "./components/bottom-nav";
 import styles from "./styles/app.css";
-// import { getEnv } from "./env.server";
+import { useEffect } from "react";
 
 export function links() {
   return [{ rel: "stylesheet", href: styles }];
 }
-
-// type LoaderData = {
-//   ENV: ReturnType<typeof getEnv>;
-// };
-
-export const loader: LoaderFunction = async ({ request }) => {
-  console.log(request)
-  // return json<LoaderData>({
-  //   ENV: getEnv(),
-  // });
-  return null
-};
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -57,22 +45,45 @@ export const meta: MetaFunction = () => ({
   "twitter:image": "https://quranplus.xyz/main.png",
 });
 
+export const loader: LoaderFunction = () => {
+  // @ts-ignore
+  return {
+    // @ts-ignore
+    FIREBASE_APIKEY, 
+    // @ts-ignore
+    FIREBASE_AUTHDOMAIN,
+    // @ts-ignore
+    FIREBASE_PROJECTID,
+    // @ts-ignore
+    FIREBASE_STORAGEBUCKET,
+    // @ts-ignore
+    FIREBASE_MESSAGINGSENDERID,
+    // @ts-ignore
+    FIREBASE_APPID,
+    // @ts-ignore
+    FIREBASE_MEASUREMENTID,
+  };
+};
+
 export default function App() {
-  // const data = useLoaderData() as LoaderData;
-  // console.log(data)
+  const data = useLoaderData();
 
-  // const firebaseConfig = {
-  //   apiKey: data.ENV.FIREBASE_APIKEY,
-  //   authDomain: data.ENV.FIREBASE_AUTHDOMAIN,
-  //   projectId: data.ENV.FIREBASE_PROJECTID,
-  //   storageBucket: data.ENV.FIREBASE_STORAGEBUCKET,
-  //   messagingSenderId: data.ENV.FIREBASE_MESSAGINGSENDERID,
-  //   appId: data.ENV.FIREBASE_APPID,
-  //   measurementId: data.ENV.FIREBASE_MEASUREMENTID,
-  // };
+  useEffect(() => {
+    const firebaseConfig = {
+      apiKey: data.FIREBASE_APIKEY,
+      authDomain: data.FIREBASE_AUTHDOMAIN,
+      projectId: data.FIREBASE_PROJECTID,
+      storageBucket: data.FIREBASE_STORAGEBUCKET,
+      messagingSenderId: data.FIREBASE_MESSAGINGSENDERID,
+      appId: data.FIREBASE_APPID,
+      measurementId: data.FIREBASE_MEASUREMENTID,
+    };
 
-  // Initialize Firebase
-  // initializeApp(firebaseConfig);
+    // // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+  }, [data]);
+
   return (
     <html lang="en">
       <head>
@@ -87,11 +98,6 @@ export default function App() {
         </>
         <ScrollRestoration />
         <Scripts />
-        {/* <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
-          }}
-        /> */}
         <LiveReload port={8002} />
       </body>
     </html>

@@ -6,7 +6,7 @@
     "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
     "deploy": "node_modules/.bin/pnpm run build && node_modules/.bin/wrangler publish",
     "dev:remix": "remix watch",
-    "dev:miniflare": "cross-env NODE_ENV=development miniflare ./build/index.js --watch",
+    "dev:miniflare": "cross-env NODE_ENV=development miniflare -e .env ./build/index.js --watch",
     "dev": "concurrently \"node_modules/.bin/pnpm run dev:css\" \"remix build && run-p \"dev:*\"\"",
     "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
     "start": "cross-env NODE_ENV=production miniflare ./build/index.js",
