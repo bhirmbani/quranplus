@@ -4,3 +4,8 @@ export type UpdateMemorizedPayload = {
   surahIdx: number;
   verseIdx?: number;
 };
+
+export type UpdateLastReadPayload = {
+  surah_idx: number;
+  verse_idx: number;
+};

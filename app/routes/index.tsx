@@ -43,6 +43,9 @@ export default function Index() {
   const statsMemorizedData =
     statistics && statistics[0] && statistics[0].memorized.data;
 
+  const statsLastReadData =
+    statistics && statistics[0] && statistics[0].last_read;
+
   const memorizedVersesOfCurrentSurah =
     statsMemorizedData &&
     statsMemorizedData.find(
@@ -54,6 +57,7 @@ export default function Index() {
     (verse, index) => {
       return {
         ...verse,
+        lastRead: false,
         paused: true,
         currentTime: 0,
         end: rawSurah[surahPosition].verses.length === index + 1,
@@ -100,6 +104,7 @@ export default function Index() {
         return {
           ...verse,
           paused: true,
+          lastRead: newSurahNumber === statsLastReadData?.surah_idx && index ===statsLastReadData.verse_idx,
           currentTime: 0,
           memorized: checkIsVerseMemorized(index),
           end: rawSurah[newSurahNumber].verses.length === index + 1,

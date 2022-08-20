@@ -1,6 +1,6 @@
 import db from "~/models";
 import { surahs } from "~/repositories/surahs";
-import type { UpdateMemorizedPayload } from "./stats.type";
+import type { UpdateLastReadPayload, UpdateMemorizedPayload } from "./stats.type";
 
 export const getStatistics = async () => {
   const stats = await db.statistic.toArray();
@@ -9,7 +9,7 @@ export const getStatistics = async () => {
 
 export const updateStatistics = async (
   type: "last_read" | "daily_checkin" | "memorized",
-  payload: UpdateMemorizedPayload
+  payload: UpdateMemorizedPayload | UpdateLastReadPayload
 ) => {
   const stats = await getStatistics();
   // create if not exist
@@ -38,6 +38,8 @@ export const updateStatistics = async (
   switch (type) {
     case "memorized":
       return updateMemorized(payload as UpdateMemorizedPayload);
+    case "last_read":
+      return updateLastRead(payload as UpdateLastReadPayload);
     default:
       break;
   }
@@ -278,4 +280,13 @@ export const updateMemorized = async ({
   });
 
   return newPayload;
+};
+
+export const updateLastRead = async ({
+  surah_idx,
+  verse_idx,
+}: UpdateLastReadPayload) => {
+  const stats = await getStatistics();
+  const id = stats[0].id!;
+  await db.statistic.update(id, { last_read: { surah_idx, verse_idx } });
 };

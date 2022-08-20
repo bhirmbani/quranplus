@@ -6,6 +6,7 @@ import {
 import { updateStatistics } from "~/services/stats";
 import { generateVerseNumber } from "~/utils/data-manipulation";
 import {
+  BookmarkFilledIcon,
   BookmarkIcon,
   CheckFilledIcon,
   CheckIcon,
@@ -91,6 +92,11 @@ const SurahOptionsCard = ({
     });
   };
 
+  const handleLastReadVerse = () => {
+    updateStatistics("last_read", { verse_idx: verseIdx, surah_idx: surahIdx });
+    generateNewState({ lastRead: !verse.lastRead }, verseIdx);
+  };
+
   return (
     <div className="flex flex-column justify-around m-0 card-bordered card card-body p-2">
       <audio id="verse-audio" />
@@ -109,8 +115,11 @@ const SurahOptionsCard = ({
         {verse.memorized ? <CheckFilledIcon /> : <CheckIcon />}
       </button>
       {/* bookmark */}
-      <button className="btn btn-xs btn-ghost btn-circle">
-        <BookmarkIcon />
+      <button
+        onClick={handleLastReadVerse}
+        className="btn btn-xs btn-ghost btn-circle"
+      >
+        {verse.lastRead ? <BookmarkFilledIcon /> : <BookmarkIcon />}
       </button>
       {/* collection */}
       <button

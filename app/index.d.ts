@@ -25,6 +25,7 @@ type VerseStateModel = {
   currentTime?: number;
   end?: boolean;
   memorized?: boolean;
+  lastRead?: boolean;
 };
 
 type VersesState = VerseStateModel & VerseModel;

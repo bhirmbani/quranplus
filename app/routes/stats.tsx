@@ -4,11 +4,15 @@ import { getStatistics } from "~/services/stats";
 import Chart from "react-frappe-charts";
 import { formatDate, formatDateDayJs } from "~/utils/time-manipulation";
 import { InfoIcon } from "~/components/icon";
+import { surahs } from "~/repositories/surahs";
 
 export default function Stats() {
   const statistics = useLiveQuery(() => getStatistics());
 
   const statisticsReady = statistics && statistics[0] && statistics[0];
+
+  const statsLastReadData =
+  statistics && statistics[0] && statistics[0].last_read;
 
   const surahProgressFirstDate =
     statisticsReady?.memorized.progress.surah[0].date;
@@ -16,8 +20,6 @@ export default function Stats() {
     statisticsReady?.memorized.progress.surah[
       statisticsReady?.memorized.progress.surah.length - 1
     ].date;
-
-  console.log(surahProgressFirstDate);
 
   const verseProgressFirstDate =
     statisticsReady?.memorized.progress.verse[0].date;
@@ -62,8 +64,6 @@ export default function Stats() {
 
   // console.log(verseProgressChartData);
 
-  // TODO: check error on prod site
-
   return (
     statistics !== undefined && (
       <div className="flex flex-col min-h-content">
@@ -85,7 +85,9 @@ export default function Stats() {
                 </div>
                 <div className="stat-desc">{`${formatDate(
                   surahProgressFirstDate || new Date()
-                )} - ${formatDate(surahProgressLatestDate || new Date())}`}</div>
+                )} - ${formatDate(
+                  surahProgressLatestDate || new Date()
+                )}`}</div>
               </div>
 
               <div className="stat">
@@ -95,13 +97,27 @@ export default function Stats() {
                 </div>
                 <div className="stat-desc">{`${formatDate(
                   verseProgressFirstDate || new Date()
-                )} - ${formatDate(verseProgressLatestDate || new Date())}`}</div>
+                )} - ${formatDate(
+                  verseProgressLatestDate || new Date()
+                )}`}</div>
               </div>
             </div>
 
             <div className="min-w-full flex justify-center">
+              <p className="prose prose-sm m-0">Ayat yang terakhir kamu baca</p>
+            </div>
+            <div className="min-w-full flex justify-center">
               <p className="prose prose-sm m-0">
-                Kemajuan hafalan Quran kamu <span className="underline align-super">BETA</span>
+                {surahs["id"][statsLastReadData?.surah_idx || 0].transliteration}{" "}
+                {surahs["id"][statsLastReadData?.surah_idx || 0].id}:
+                {surahs["id"][statsLastReadData?.surah_idx || 0].verses[statsLastReadData?.verse_idx || 0].id}
+              </p>
+            </div>
+
+            <div className="min-w-full flex justify-center">
+              <p className="prose prose-sm m-0 font-bold">
+                Kemajuan hafalan Quran kamu{" "}
+                <span className="underline align-super">BETA</span>
               </p>
             </div>
             <div className="max-w-full">
