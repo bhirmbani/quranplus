@@ -129,7 +129,7 @@ const Navbar = () => {
                 onChange={(e) => handleSearch(e.target.value)}
                 type="text"
                 placeholder="Search"
-                className="input input-bordered input-sm w-[90%]"
+                className="input text-[16px] input-bordered input-sm w-[90%]"
               />
               {searchTerm.length > 0 && (
                 <label
