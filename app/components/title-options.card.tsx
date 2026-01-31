@@ -1,9 +1,13 @@
+import { useNavigate } from "@remix-run/react";
+import { InfoIconFilled } from "./icon";
+
 const TitleOptionsCard = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <div className="flex flex-column justify-around m-0 card-bordered card card-body p-2">
-        {/* info */}
-        <label htmlFor="info-title" className="btn btn-xs btn-ghost btn-circle">
+        {/* help */}
+        <label htmlFor="help-title" className="btn btn-xs btn-ghost btn-circle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -16,6 +20,9 @@ const TitleOptionsCard = () => {
               clipRule="evenodd"
             />
           </svg>
+        </label>
+        <label onClick={() => navigate('about')} htmlFor="about" className="btn btn-xs btn-ghost btn-circle">
+          <InfoIconFilled />
         </label>
       </div>
     </div>

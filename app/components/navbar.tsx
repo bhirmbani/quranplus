@@ -41,12 +41,12 @@ const Navbar = () => {
 
   return (
     <div className="navbar bg-base-300 mx-auto max-w-2xl">
-      <input type="checkbox" id="info-title" className="modal-toggle" />
+      <input type="checkbox" id="help-title" className="modal-toggle" />
       <div className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
           <div className="mb-2">
             <label
-              htmlFor="info-title"
+              htmlFor="help-title"
               className="btn btn-xs btn-circle absolute right-6"
             >
               ✕
@@ -91,14 +91,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* <div className="modal-action">
-            <label
-              htmlFor="info-title"
-              className="btn"
-            >
-              Ok
-            </label>
-          </div> */}
+
         </div>
       </div>
       <div className="navbar-start" />
